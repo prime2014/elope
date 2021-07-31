@@ -7,3 +7,5 @@ __pycache__/
 pytest.cache/
 
 ./watchmen/node_modules
+
+.idea/
