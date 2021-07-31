@@ -1,0 +1,88 @@
+version: "3"
+
+
+services:
+  postgres:
+    image: postgres:12
+    container_name: elope_local_postgres
+    env_file:
+      - ./.env
+    volumes:
+      - ~/Desktop/esite/app:/server/db
+    networks:
+      - elope-bridge
+
+  django: &django
+    build:
+      context: .
+      dockerfile: ./utils/django/Dockerfile
+    image: local_django
+    container_name: elope_local_django
+    volumes:
+      - .:/elope
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - postgres
+    networks:
+      - elope-bridge
+
+  react:
+    build:
+      context: .
+      dockerfile: ./utils/react/Dockerfile
+    image: local_elope_react
+    container_name: elope_local_react
+    volumes:
+      - ./watchmen/:/app
+    env_file:
+      - ./.env
+    ports:
+      - "3000:3000"
+    command: >
+      sh -c "npm start"
+    depends_on:
+      - django
+    networks:
+      - elope-bridge
+
+  redis:
+    image: redis:alpine
+    container_name: elope_local_redis
+    networks:
+      - elope-bridge
+
+  celery:
+    <<: *django
+    image: local_celery
+    restart: always
+    container_name: elope_local_celery
+    ports: []
+    command: >
+      sh -c "celery -A config.celery_app worker -l DEBUG
+             celery -A config.celery_app beat -l INFO"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - elope-bridge
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: elope_local_mailhog
+    ports:
+      - "1025:1025"  # SMTP Server
+      - "8025:8025"  # Browsable view of mailhog UI
+    restart: unless-stopped
+    networks:
+      - elope-bridge
+
+networks:
+  elope-bridge:
+    driver: bridge

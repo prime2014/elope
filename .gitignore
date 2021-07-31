@@ -1,0 +1,9 @@
+# environment files
+.env
+
+
+# test cache files
+__pycache__/
+pytest.cache/
+
+./watchmen/node_modules

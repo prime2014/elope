@@ -1,0 +1,15 @@
+{% block plain %}
+ACTIVATE YOUR ACCOUNT
+{% endblock %}
+
+{% block text %}
+    This email is to verify your account
+{% endblock %}
+
+{% block html %}
+    <h1>Hi {{ first_name }} {{ last_name }}!</h1>
+
+    <p>You've received this email because you recently created an account on elope.com</p>
+    <p>To activate your account, you need to click the link below or paste it in your browser</p>
+    <p><a href="http://127.0.0.1:3000/activation/{{uid}}/{{token}}">http://127.0.0.1:3000/activation/{{uid}}/{{token}}</a></p>
+{% endblock %}
