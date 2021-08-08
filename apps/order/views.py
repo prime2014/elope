@@ -10,6 +10,7 @@ from apps.accounts.models import Address
 from apps.inventory.models import Stock
 import logging
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO)
@@ -69,7 +70,7 @@ class CartViewset(viewsets.ModelViewSet):
             cart = Cart.objects.filter(cart_owner=self.request.user)
             return cart
         else:
-            raise None
+            raise PermissionDenied()
 
     def perform_create(self, serializer):
         draft_order, _ = Order.objects.get_or_create(customer=self.request.user, status="DRAFT")

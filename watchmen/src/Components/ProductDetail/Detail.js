@@ -30,10 +30,11 @@ class ProductDetail extends Component {
     }
 
     thumbnailTemplate(item) {
-        return <img src={item} alt="product" style={{ display: 'block', height: "75px", margin:"5px 20px"}} />;
+        return <img src={item} alt="product" style={{ width: "60px", display: 'block', height: "75px", margin:"5px 10px"}} />;
     }
 
     render(){
+        console.log(this.props);
         let { product, cart } = this.props;
         let data = product ? product : {};
         let responsiveOptions = [
@@ -69,7 +70,7 @@ class ProductDetail extends Component {
                                           <img onClick={this.handleDisplayImage} className="gallery-img" src={item} alt="product" height="120px" width="120px"/>
                                         );
                                     })} */}
-                                    <Galleria value={data.image_urls} responsiveOptions={responsiveOptions} numVisible={3} circular style={{ maxWidth: '500px', display:"flex", justifyContent:"center" }}
+                                    <Galleria value={data.image_urls} responsiveOptions={responsiveOptions} numVisible={3} circular style={{ maxWidth: '200px', display:"flex", justifyContent:"center" }}
                                         showItemNavigators item={this.itemTemplate} thumbnail={this.thumbnailTemplate} />
                                 </div>
                             </div>

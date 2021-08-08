@@ -230,11 +230,21 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': "log.txt"
         }
     },
     'root': {
         'handlers': ['console'],
         'level': 'INFO'
+    },
+    'loggers': {
+        'elope.file': {
+            'handlers': ['file'],
+            'level': 'WARNING'
+        }
     }
 }
 

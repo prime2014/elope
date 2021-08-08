@@ -1,8 +1,8 @@
 import axios from "../axios.config";
 
 
-
 const loginUser = async (credentials) => {
+     
     try{
         let user = null;
         let response = await axios.post('/accounts/api/login/', {...credentials});

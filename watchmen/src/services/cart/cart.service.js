@@ -7,12 +7,12 @@ const client = axios.create({
     baseURL,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Token ${cookie.load("authToken")}`
     },
-})
+});
 
 
 const getCartItems = async () => {
+    client.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`
     try {
         let cart = null;
         let response = await client.get('/orders/api/v1/cart/')
@@ -25,6 +25,7 @@ const getCartItems = async () => {
 }
 
 const addToCart = async (item) => {
+    client.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`
     try {
         let product = null;
         let response = await client.post('/orders/api/v1/cart/', {...item});
@@ -38,6 +39,7 @@ const addToCart = async (item) => {
 
 
 const updateCartItem = async (pk ,product) => {
+    client.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`
     try {
         let item = null;
         let response = await client.put(`/orders/api/v1/cart/${pk}/`, {item: product.product,quantity: product.quantity});
@@ -50,6 +52,7 @@ const updateCartItem = async (pk ,product) => {
 }
 
 const deleteCartItem = async pk => {
+    client.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`
     try {
         let state = null;
         let response = await client.delete(`/orders/api/v1/cart/${pk}/`);

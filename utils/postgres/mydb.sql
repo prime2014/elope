@@ -1,0 +1,4 @@
+CREATE USER prime;
+CREATE DATABASE watchmen;
+
+GRANT ALL PRIVILEGES ON watchmen TO prime;

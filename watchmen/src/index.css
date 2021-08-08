@@ -24,10 +24,78 @@ code {
     monospace;
 }
 
+.p-radiobutton {
+    margin:0 5px;
+    padding: 0;
+    display: inline-block;
+}
+
+.edit {
+    margin: 0 10px;
+    background-color: transparent;
+    color: darkslateblue;
+    border: 1px solid darkslateblue;
+}
+
+.filter-class {
+    padding: 20px 15px;
+    margin-top:20px;
+}
+
+.price-class {
+    padding:20px 15px;
+    margin-top:10px;
+}
+
+.first-decima {
+    border-bottom:1px solid #ccc;
+}
+
+.advert {
+    padding:10px 10px;
+}
+
+.price-class p {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.price-range {
+    padding: 25px 10px;
+}
+
+.filter-class ul li {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    align-items: center;
+    border: none;
+    line-height: 40px;
+}
+
+.delete {
+    margin: 0 10px;
+    background-color: transparent;
+    color: crimson;
+    border: 1px solid crimson;
+}
+
+.delete:hover {
+    background-color: crimson;
+    color: white;
+}
+
 .banner-images h4 {
     font-family: 'Sacramento', cursive;
     font-size: 60px;
     color:crimson;
+}
+
+.set-view {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .top-menu, .left-panel {
@@ -395,12 +463,12 @@ code {
     border: 1px solid #ccc;
 }
 
-.category ul {
+.category ul:first-child {
     margin:10px 0;
     padding:0;
 }
 
-.category ul li {
+.category ul:first-child li {
     line-height: 40px;
     list-style-type:none;
     padding:0 10px;

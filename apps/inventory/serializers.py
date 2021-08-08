@@ -37,6 +37,11 @@ class ProductSerializer(serializers.ModelSerializer):
             "image_urls"
         )
 
+    def to_representation(self, instance):
+        obj = super().to_representation(instance)
+        obj["category"] = instance.category.name
+        return obj
+
     def create(self, validated_data):
         return models.Products.objects.create(**validated_data)
 

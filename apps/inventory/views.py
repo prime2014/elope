@@ -6,7 +6,7 @@ import logging
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('elope.file')
 
 
 
@@ -33,7 +33,7 @@ class ProductViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ProductSerializer
 
     def list(self, request, *args, **kwargs):
-        logger.info(request.COOKIES)
+        logger.warning("warning logger!")
         return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):

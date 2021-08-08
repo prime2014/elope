@@ -11,40 +11,18 @@ import { Avatar } from 'primereact/avatar';
 import { Sidebar } from 'primereact/sidebar';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import cookie from "react-cookies";
+import PropTypes from "prop-types";
 
 class Navbar extends Component{
 
     constructor(props){
         super(props);
         this.state = {
-            quantity: 0,
             visible: false
         }
         this.overlay = React.createRef()
     }
 
-    componentDidMount(){
-        let { cart } = this.props;
-        let quantity = 0;
-        let q_list = cart.map(item=>item.quantity);
-        q_list.length > 0 ? quantity = q_list.reduce((a, b)=> a + b) : quantity = 0;
-
-        this.setState({
-            quantity
-        })
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        let quantity = 0;
-        let q_list = this.props.cart.map(item=>item.quantity);
-        q_list.length > 0 ? quantity = q_list.reduce((a, b)=> a + b) : quantity=0;
-        if(prevProps.cart !== this.props.cart){
-            this.setState({
-                quantity
-            })
-        }
-
-    }
 
     setVisible(){
         this.setState({
@@ -59,7 +37,9 @@ class Navbar extends Component{
     }
 
     render(){
-    let { quantity } = this.state;
+    let { tally } = this.props;
+    let quantities= tally.length ? tally.map(item=> item.quantity) : 0
+    let count = quantities ? quantities.reduce((a, b)=> a + b) : 0;
     const styleSetter = {
         color: "#78244C",
         textDecoration:"none"
@@ -128,7 +108,7 @@ class Navbar extends Component{
                 </li>
                 <li><NavLink activeStyle={styleSetter} to="/cart">
                     <i className="pi pi-shopping-cart"></i>
-                    <Badge className="badge-value" value={quantity ? quantity : "0"}></Badge>
+                    <Badge className="badge-value" value={count ? count : "0"}></Badge>
                     </NavLink>
                 </li>
             </ul>
@@ -143,11 +123,20 @@ class Navbar extends Component{
     }
 }
 
+Navbar.propTypes = {
+    tally: PropTypes.array,
+    refreshCartItem: PropTypes.func
+}
 
+const mapStateToProps = (state, ownProps) => {
+    return {
+        tally: state.cartItems.cart,
+    }
+}
 
 const mapDispatchToProps = {
     refreshCartItem,
     cartItemsDispatch
 }
 
-export default connect(null, mapDispatchToProps)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
