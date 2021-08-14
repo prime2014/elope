@@ -30,6 +30,7 @@ class Navbar extends Component{
         })
     }
 
+
     showSearch = () => {
         this.setState({
             visible: true

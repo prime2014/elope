@@ -1,13 +1,14 @@
-from rest_framework import viewsets, status, response, authentication, permissions
+from rest_framework import viewsets, status, response, authentication, permissions,pagination
 from apps.inventory import models
 from apps.inventory import serializers
 from rest_framework.decorators import action
 import logging
+from rest_framework.pagination import PageNumberPagination
+
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
 
 logger = logging.getLogger('elope.file')
-
 
 
 class CategoryViewset(viewsets.ModelViewSet):
@@ -31,10 +32,19 @@ class ProductViewset(viewsets.ModelViewSet):
     authentication_classes = ()
     permission_classes = (permissions.AllowAny,)
     serializer_class = serializers.ProductSerializer
+    pagination_class = PageNumberPagination
 
     def list(self, request, *args, **kwargs):
-        logger.warning("warning logger!")
-        return super().list(request, *args, **kwargs)
+        queryset = models.Products.objects.all()
+        paginator = self.pagination_class()
+        paginator.page_size = 12
+        page = paginator.paginate_queryset(queryset, request)
+        if page is not None:
+            serializers = self.serializer_class(page, many=True)
+            return paginator.get_paginated_response(serializers.data)
+        else:
+            serializers = self.serializer_class(queryset, many=True)
+            return response.Response(serializers.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)

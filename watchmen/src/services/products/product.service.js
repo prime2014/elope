@@ -1,9 +1,6 @@
 import axios from "../axios.config";
 
 
-
-
-
 const getCategory = async () => {
     try {
         let category = null;
@@ -19,7 +16,8 @@ const getProductList = async () => {
     try{
         let products = null;
         let response = await axios.get('/inventory/api/v1/products/');
-        if (response) products = response.data;
+        if (response) products = response.data.results;
+        console.log(products);
         return products;
     } catch(error){
         return error.response;

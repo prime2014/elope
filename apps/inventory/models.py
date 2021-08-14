@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
+from django.db.models import F
 
 
 class Category(models.Model):
@@ -127,12 +128,13 @@ class Stock(models.Model):
         return f"{self.product.name}"
 
     def decrease_stock(self, quantity):
-        self.quantity -= quantity
+        self.quantity = F("quantity") - quantity
         self.save(update_fields=['quantity'])
 
     def increase_stock(self, quantity):
-        self.quantity += quantity
+        self.quantity = F("quantity") + quantity
         self.save(update_fields=['quantity'])
+
 
 @receiver(post_save, sender=Products)
 def created_product(sender, created, instance, **kwargs):
