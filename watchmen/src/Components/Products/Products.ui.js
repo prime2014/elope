@@ -38,7 +38,7 @@ class Products extends Component{
             productAPI.getProductsAndOrder().then(resp=>{
                 store.dispatch(setProductList(resp[0].data.results));
                 store.dispatch(setOrderDetail(resp[1].data[0]));
-                store.dispatch(setCartItems(resp[1].data[0].item_order));
+                if(resp[1].data[0].item_order.length > 0) store.dispatch(setCartItems(resp[1].data[0].item_order));
             })
         } else {
             this.props.dispatchProductList();
@@ -159,9 +159,7 @@ class Products extends Component{
                     </div>
                 </Dialog>
             : null}
-            <div className={progress !== 100 ? "loadd" : "progress-bar"}>
-                <div className="progress"></div>
-            </div>
+
             <Navbar cart={ cart.length ? cart : [] }>
               <PageBanner>
                 <h2>CATEGORY</h2>

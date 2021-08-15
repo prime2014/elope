@@ -1,11 +1,12 @@
 from apps.accounts import serializers, models
-from rest_framework import response, status, viewsets, permissions
+from rest_framework import response, status, viewsets, permissions, authentication
 from rest_framework.views import APIView
 from apps.accounts.auth import AuthenticateUser
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from apps.accounts.tasks import send_activation_link
 from apps.accounts.utils import activation_token
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
 
 
 class AddressViewset(viewsets.ModelViewSet):
@@ -44,6 +45,16 @@ class LoginAPIView(APIView):
             return response.Response({
                 'error': 'Invalid User Credentials'
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutAPIView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            return response.Response({'success': 'Logout Successful'}, status=status.HTTP_200_OK)
 
 
 class UserViewset(viewsets.ModelViewSet):

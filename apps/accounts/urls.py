@@ -9,5 +9,6 @@ router.register(r'address', viewset=views.AddressViewset, basename="address")
 
 urlpatterns = [
     re_path(r'^api/v1/', include(router.urls)),
-    re_path(r'^api/login/$', views.LoginAPIView.as_view())
+    re_path(r'^api/login/$', views.LoginAPIView.as_view()),
+    re_path(r'^api/logout/$', views.LogoutAPIView.as_view())
 ]

@@ -3,7 +3,7 @@ import { Badge } from '../../node_modules/primereact/badge';
 import { NavLink, Link } from "react-router-dom";
 import { Tooltip } from 'primereact/tooltip';
 import { connect } from "react-redux";
-import { refreshCartItem } from "../redux/actions";
+import { refreshCartItem, resetApp } from "../redux/actions";
 import { cartItemsDispatch } from "../redux/dispatchActions";
 import Footer from "./Footer";
 import { ScrollTop } from 'primereact/scrolltop';
@@ -12,6 +12,10 @@ import { Sidebar } from 'primereact/sidebar';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import cookie from "react-cookies";
 import PropTypes from "prop-types";
+import toast, { Toaster } from "react-hot-toast";
+import { accountsAPI } from "../services/accounts/accounts.service";
+import { store } from "../redux/configureStore";
+
 
 class Navbar extends Component{
 
@@ -37,6 +41,34 @@ class Navbar extends Component{
         })
     }
 
+    handleLogOut = () => {
+        toast.promise(
+            accountsAPI.logoutUser(),
+            {
+                loading: "Signing you out...",
+                success:(data)=> {
+                    if(data.success){
+                        cookie.remove('authToken');
+                        localStorage.clear();
+                        store.dispatch(resetApp());
+                        return data.success;
+                    }
+                    else return "Could not sign you out. Please Try again.";
+                },
+                error: (err)=>{
+                    return "There was a server problem";
+                }
+            },
+            {
+                style: {
+                 borderRadius: '10px',
+                 background: '#333',
+                 color: '#fff',
+                 },
+             }
+        )
+    }
+
     render(){
     let { tally } = this.props;
     let quantities= tally.length ? tally.map(item=> item.quantity) : 0
@@ -50,7 +82,7 @@ class Navbar extends Component{
     return(
         <main>
         <ScrollTop />
-
+        <Toaster />
         <Sidebar className="search-view" visible={this.state.visible} fullScreen onHide={() => this.setVisible()}>
             <form>
                 <input type="search" name="products" placeholder="Search items here" />
@@ -104,7 +136,7 @@ class Navbar extends Component{
                 <li>
                     <Avatar label="P" shape="circle" size="large" aria-haspopup aria-controls="overlay_panel" onClick={(e) => this.overlay.current.toggle(e)}/>
                     <OverlayPanel ref={this.overlay} showCloseIcon id="overlay_panel"  style={{width: '150px'}} className="overlaypanel-demo">
-                       {cookie.load("authToken") ? <>Log Out</> : <Link to="/login">Login</Link>}
+                       {cookie.load("authToken") ? <span className="sign-out" onClick={this.handleLogOut}>Log Out</span> : <Link to="/login">Login</Link>}
                     </OverlayPanel>
                 </li>
                 <li><NavLink activeStyle={styleSetter} to="/cart">

@@ -36,6 +36,12 @@ export const setProductDetail = payload => {
     }
 }
 
+export const resetApp = () => {
+    return {
+        type: actionTypes.RESET_APP
+    }
+}
+
 export const setLoginCredentials = payload => {
     return {
         type: actionTypes.SET_LOGIN_CREDENTIALS,

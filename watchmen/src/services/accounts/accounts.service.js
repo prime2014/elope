@@ -1,6 +1,7 @@
 import axios from "../axios.config";
 import {store} from "../../redux/configureStore";
 import { setLoginCredentials } from "../../redux/actions";
+import cookie from "react-cookies";
 
 
 const loginUser = async (credentials) => {
@@ -16,6 +17,22 @@ const loginUser = async (credentials) => {
         return error.response.data;
     }
 }
+
+
+
+const logoutUser = async () => {
+    axios.defaults.headers['Authorization'] = `Token ${cookie.load("authToken")}`;
+    try {
+        let state = null;
+        let response = await axios.get('/accounts/api/logout/');
+        if (response) state = response.data;
+        console.log(state);
+        return state;
+    } catch(error){
+        return error.response.data;
+    }
+}
+
 
 const registerUser = async credentials => {
     try {
@@ -58,5 +75,6 @@ export const accountsAPI = {
     loginUser,
     registerUser,
     getUser,
-    activateUserAccount
+    activateUserAccount,
+    logoutUser
 }

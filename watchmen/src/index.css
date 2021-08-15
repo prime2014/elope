@@ -47,6 +47,15 @@ code {
     margin-top:10px;
 }
 
+.sign-out {
+    cursor: pointer;
+}
+
+.sign-out:hover {
+    color: darkslateblue;
+    font-weight: bold;
+}
+
 .first-decima {
     border-bottom:1px solid #ccc;
 }
