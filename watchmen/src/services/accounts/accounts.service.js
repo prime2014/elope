@@ -1,16 +1,19 @@
 import axios from "../axios.config";
+import {store} from "../../redux/configureStore";
+import { setLoginCredentials } from "../../redux/actions";
 
 
 const loginUser = async (credentials) => {
-     
+
     try{
         let user = null;
         let response = await axios.post('/accounts/api/login/', {...credentials});
-        if (response) user = response.data;
+        if (response) user =response.data;
         console.log(user);
         return user;
     } catch(error){
-        return error.response;
+        console.log(error.response.data);
+        return error.response.data;
     }
 }
 

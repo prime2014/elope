@@ -6,11 +6,13 @@ import { Button } from 'primereact/button';
 import {Checkbox} from 'primereact/checkbox';
 import { accountsAPI } from "../../services/accounts/accounts.service";
 import { Messages } from 'primereact/messages';
-import { setLoginCredentials } from "../../redux/actions";
 import { connect } from "react-redux";
 import cookie from "react-cookies";
 import PageBanner from "../../common/page_banner";
-
+import { dispatchLoginUser } from "../../redux/dispatchActions";
+import { setLoginCredentials } from "../../redux/actions";
+import toast, { Toaster } from "react-hot-toast";
+import { store } from "../../redux/configureStore";
 
 
 class Login extends Component{
@@ -51,21 +53,36 @@ class Login extends Component{
         that.setState({
             loading:true
         }, ()=>{
-            accountsAPI.loginUser({ email, password }).then(resp=>{
-                console.log(resp);
-                if(resp.token){
-                    const expires = new Date()
-                    expires.setDate(Date.now() + 1000 * 60 * 60 * 24 * 14)
-                    cookie.save("authToken", resp.token, { path: "/", expires, maxAge: 1209600, domain: "127.0.0.1", httpOnly: false})
-                    that.props.history.push("/products");
-                } else {
-                    that.setState({
-                        loading:false
-                    }, ()=>that.msgs1.show({severity: 'error',  detail: resp.data.error}))
-                }
-            }).catch(err=>{
-                that.msgs1.show({severity: 'error', detail: `${err}`});
-            })
+            toast.promise(
+                accountsAPI.loginUser({email, password}),
+                {
+                    loading: "Logging you in: Please wait...",
+                    success:(data)=> {
+                        const expires = new Date()
+                        expires.setDate(Date.now() + 1000 * 60 * 60 * 24 * 14)
+                        if (data.token){
+                            store.dispatch(setLoginCredentials(data));
+                            that.setState({ loading:false }, ()=>{
+                                cookie.save("authToken", data.token, { path: "/", expires, maxAge: 1209600, domain: "127.0.0.1", httpOnly: false});
+                                that.props.history.push("/products");
+                            })
+                            return "login successful!";
+                        } else {
+                            that.setState({ loading:false }, ()=>that.msgs1.show({severity: 'error',  detail: Object.values(data)[0]}));
+                        }
+                    },
+                    error: (err)=>{
+                        that.setState({ loading:false }, ()=>that.msgs1.show({severity: 'error',  detail: Object.values(err)[0]}))
+                    }
+                },
+                {
+                    style: {
+                     borderRadius: '10px',
+                     background: '#333',
+                     color: '#fff',
+                     },
+                 }
+            )
 
         })
     }
@@ -74,6 +91,8 @@ class Login extends Component{
     render(){
         let { cart } = this.props;
         return(
+            <React.Fragment>
+            <Toaster />
             <Navbar cart={ cart }>
                 <PageBanner>
                     <h2>Login</h2>
@@ -123,6 +142,7 @@ class Login extends Component{
 
                 </div>
             </Navbar>
+            </React.Fragment>
         )
     }
 }
@@ -135,6 +155,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
     setLoginCredentials,
+    dispatchLoginUser
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -6,7 +6,7 @@ import { dispatchProductList } from "../../redux/dispatchActions";
 import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { cartAPI } from "../../services/cart/cart.service";
-import { addItemToCart, updateCartItem } from "../../redux/actions";
+import { addItemToCart, updateCartItem, setProductList, setOrderDetail, setCartItems } from "../../redux/actions";
 import PropTypes from "prop-types";
 import toast, { Toaster } from "react-hot-toast";
 import { Dialog } from 'primereact/dialog';
@@ -15,6 +15,9 @@ import { RadioButton } from 'primereact/radiobutton';
 import { Slider } from 'primereact/slider';
 import Fifty from "../../images/fifty-fathoms.png";
 import { Paginator } from 'primereact/paginator';
+import { store } from "../../redux/configureStore";
+import { productAPI } from "../../services/products/product.service";
+
 
 class Products extends Component{
     constructor(props){
@@ -30,11 +33,16 @@ class Products extends Component{
     }
 
     componentDidMount(){
-        // let { category, products } = this.props;
-        // if(category.length && products.length) return;
-        // else {
+        let { order, login } = this.props;
+        if(login && Object.keys(order).length <= 0){
+            productAPI.getProductsAndOrder().then(resp=>{
+                store.dispatch(setProductList(resp[0].data.results));
+                store.dispatch(setOrderDetail(resp[1].data[0]));
+                store.dispatch(setCartItems(resp[1].data[0].item_order));
+            })
+        } else {
             this.props.dispatchProductList();
-        // }
+        }
     }
 
 
@@ -247,7 +255,8 @@ const mapStateToProps = (state) => {
         category: state.category.category,
         login: state.login.login,
         cart: state.cartItems.cart,
-        progress: state.progress.progress
+        progress: state.progress.progress,
+        order: state.orderDetail.order
     }
 }
 

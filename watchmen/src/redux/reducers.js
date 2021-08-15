@@ -12,7 +12,7 @@ export const login = (
 ) => {
     switch(action.type){
         case actionTypes.SET_LOGIN_CREDENTIALS:
-            state = {login: true, uid:{...action.payload.user}, auth_token:action.payload.token, ...state}
+            state = {login: true, uid:{...action.payload.user}, auth_token:action.payload.token}
             return state;
         default:
             return state;

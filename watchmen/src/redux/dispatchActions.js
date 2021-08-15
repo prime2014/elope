@@ -136,3 +136,15 @@ export const dispatchSetOrderDetail = pk => {
         }
     }
 }
+
+export const dispatchLoginUser = (credentials) => {
+    return async dispatch =>{
+        try {
+            let response = await accountsAPI.loginUser(credentials);
+            if(response) dispatch(setLoginCredentials(response));
+        } catch(error){
+            console.log(error);
+            return error;
+        }
+    }
+}

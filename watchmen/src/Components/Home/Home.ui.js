@@ -12,6 +12,7 @@ import Websocket from "react-websocket";
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
 import { motion } from "framer-motion";
+import cookies from "react-cookies";
 
 class Home extends Component {
       constructor(props){
@@ -20,8 +21,11 @@ class Home extends Component {
       }
 
       componentDidMount(){
-        this.props.dispatchTrends();
+        let { order } = this.props;
         this.props.dispatchCategory();
+        if(Object.keys(order).length <=0 && cookies.load("authToken")){
+
+        }
       }
 
       changeImage = (event, image_urls) => {
@@ -213,7 +217,8 @@ const mapStateToProps = (state, ownProps) => {
     return {
         trends: state.trendingWatches.trends,
         category: state.category.category,
-        cart: state.cartItems.cart
+        cart: state.cartItems.cart,
+        order: state.orderDetail.order
     }
 }
 

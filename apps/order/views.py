@@ -11,6 +11,8 @@ from apps.inventory.models import Stock
 import logging
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
+from apps.order.forms import FilterClientOrder
+from django_filters import rest_framework as filters
 
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO)
@@ -22,6 +24,8 @@ class OrderViewset(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = ()
     authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FilterClientOrder
 
     def get_queryset(self):
         if self.request.user.is_staff:

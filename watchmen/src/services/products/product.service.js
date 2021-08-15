@@ -1,3 +1,4 @@
+import { store } from "../../redux/configureStore";
 import axios from "../axios.config";
 
 
@@ -24,6 +25,24 @@ const getProductList = async () => {
     }
 }
 
+const getProductsAndOrder = async () => {
+    let s = store.getState()
+    let user_id = s.login.uid.id;
+    let baseURL = process.env.REACT_APP_API_URL;
+    let products = `${baseURL}/inventory/api/v1/products/`
+    let order = `${baseURL}/orders/api/v1/order/?customer=${user_id}&status=DRAFT`;
+
+    let get_products = axios.get(products);
+    let get_order = axios.get(order);
+    try {
+        let response = await axios.all([get_products, get_order]);
+        console.log(response);
+        return response;
+    } catch(errors) {
+        return errors;
+    }
+}
+
 const getProductDetail = async (pk) => {
     try {
         let product = null;
@@ -40,5 +59,6 @@ const getProductDetail = async (pk) => {
 export const productAPI = {
     getCategory,
     getProductList,
-    getProductDetail
+    getProductDetail,
+    getProductsAndOrder
 }

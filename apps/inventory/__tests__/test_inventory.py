@@ -6,13 +6,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @pytest.mark.django_db(transaction=True)
 @pytest.mark.parametrize(
     "name",
     [
         ("Antique",),
         ("Men",),
-        ("Women")
+        ("Women",)
     ]
 )
 def test_category(name):

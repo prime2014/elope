@@ -15,6 +15,7 @@ user = get_user_model()
 
 STATUS = [
     ('DRAFT', _("DRAFT")),
+    ("PLACED", _("PLACED")),
     ('CONFIRMED', _('CONFIRMED')),
     ('FULFILLED', _('FULFILLED')),
     ('CANCELLED', _('CANCELLED'))
