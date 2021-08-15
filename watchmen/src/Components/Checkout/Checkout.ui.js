@@ -34,7 +34,8 @@ class Checkout extends Component{
             address_line_1: "",
             address_line_2: "",
             district: "district1",
-            postal_code: ""
+            postal_code: "",
+            payment_means: "unknown"
 
         };
         this.baseState = this.state;
@@ -172,6 +173,10 @@ class Checkout extends Component{
        })
    }
 
+   handlePlaceOrder = event => {
+
+   }
+
     render(){
         let { cart, order } = this.props;
 
@@ -183,28 +188,36 @@ class Checkout extends Component{
                 label: 'Pay through Mpesa',
                 icon: 'pi pi-mobile',
                 command: (e) => {
-                    window.alert("Hello")
+                    this.setState({
+                        payment_means: "m-pesa"
+                    })
                 }
             },
             {
                 label: 'Paypal',
                 icon: 'pi pi-paypal',
                 command: (e) => {
-                    window.alert("Hello")
+                    this.setState({
+                        payment_means: "paypal"
+                    })
                 }
             },
             {
                 label: 'Pay through bank',
                 icon: 'pi pi-credit-card',
                 command: (e) => {
-                    window.alert("Hello")
+                    this.setState({
+                        payment_means: "bank"
+                    })
                 }
             },
             {
                 label: 'Cash on delivery',
                 icon: 'pi pi-money-bill',
                 command: (e) => {
-                    window.alert("Hello")
+                    this.setState({
+                        payment_means: "cod"
+                    })
                 }
             }
         ]
@@ -331,7 +344,7 @@ class Checkout extends Component{
 
                                     <div className="notify"><Message severity="warn" text="To complete Checkout you must enter shipping address"></Message></div>
 
-                                    <SplitButton disabled={order.shipping_address && cart.length ? false : true} label={`Checkout ${order.currency ? order.currency : "KES"}  ${order.shipping_price ? parseFloat(sub_total + order.shipping_price).toFixed(2) : sub_total}`} className="paypal-btn" icon="pi pi-plus"  model={utils}></SplitButton>
+                                    <SplitButton onClick={this.handlePlaceOrder} disabled={order.shipping_address && cart.length ? false : true} label={`Checkout ${order.currency ? order.currency : "KES"}  ${order.shipping_price ? parseFloat(sub_total + order.shipping_price).toFixed(2) : sub_total}`} className="paypal-btn" icon="pi pi-plus"  model={utils}></SplitButton>
                                 </div>
                            </div>
                         </div>

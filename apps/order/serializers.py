@@ -153,6 +153,31 @@ class OrderSerializer(serializers.ModelSerializer):
             "date_of_order",
             "item_order"
         )
+        extra_kwargs = {
+            'sub_total': {'read_only': True},
+            'total': {'read_only': True}
+        }
 
     def create(self, validated_data):
         return models.Order.objects.create(**validated_data)
+
+
+
+class PlaceOrderSerializer(OrderSerializer):
+    class Meta(OrderSerializer.Meta):
+        fields = (
+            "id",
+            "status",
+            "sub_total",
+            "total"
+        )
+
+        OrderSerializer.Meta.extra_kwargs.clear()
+
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get("status", instance.status)
+        instance.sub_total = validated_data.get("sub_total", instance.sub_total)
+        instance.total = validated_data.get("total", instance.total)
+        instance.save()
+        return instance
+

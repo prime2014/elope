@@ -3,7 +3,8 @@ from rest_framework import viewsets, response, status, authentication, permissio
 from rest_framework.decorators import action
 from apps.order.serializers import (
     OrderSerializer,
-    CartSerializer
+    CartSerializer,
+    PlaceOrderSerializer
 )
 from apps.order.models import Order, Cart
 from apps.accounts.models import Address
@@ -58,6 +59,17 @@ class OrderViewset(viewsets.ModelViewSet):
                 return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return None
+
+
+
+class PlaceOrderViewset(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = PlaceOrderSerializer
+    permission_classes = ()
+    authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+
+    def perform_update(self, serializer):
+        serializer.save(customer=self.request.user)
 
 
 class CartViewset(viewsets.ModelViewSet):
