@@ -69,12 +69,20 @@ class Products extends Component{
             {
                 loading: "Adding Item to cart...",
                 success:(data)=> {
-                    if (exists) this.props.updateCartItem(data);
-                    else this.props.addItemToCart(data);
-                    spinner.classList.remove("show-spinner");
-                    spinner.nextElementSibling.classList.remove("hideBtn");
-                    button.removeAttribute("disabled")
-                    return "Item was successfully added to cart!"
+                    if(data['id'] !== undefined && data['id'] !== null){
+                        if (exists) this.props.updateCartItem(data);
+                        else this.props.addItemToCart(data);
+                        spinner.classList.remove("show-spinner");
+                        spinner.nextElementSibling.classList.remove("hideBtn");
+                        button.removeAttribute("disabled")
+                        return "Item was successfully added to cart!"
+                    } else {
+                        spinner.classList.remove("show-spinner");
+                        spinner.nextElementSibling.classList.remove("hideBtn");
+                        button.removeAttribute("disabled")
+                        return toast.error(Object.values(data.data)[0]);
+                    }
+
                 },
                 error: (err)=>{
                     spinner.classList.remove("show-spinner");
@@ -91,6 +99,7 @@ class Products extends Component{
                  },
              }
         )
+
     }
 
     handleExpandTab = event => {
@@ -137,7 +146,7 @@ class Products extends Component{
 
 
     render(){
-        let { products, cart, progress, category } = this.props;
+        let { products, cart, category} = this.props;
         console.log(cart);
         return(
             <React.Fragment>

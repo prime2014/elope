@@ -74,7 +74,7 @@ export const cartItems = (
 ) => {
     switch(action.type){
         case actionTypes.SET_CART_ITEMS:
-            state = {...state, cart:[...action.payload], order_id: action.payload[1].order_detail}
+            state = {...state, cart:[...action.payload]}
             return state;
         case actionTypes.ADD_ITEM_TO_CART:
             let new_cart = state.cart;

@@ -33,7 +33,9 @@ SECRET_KEY = 'django-insecure-12t=j=w)y_+bnlwlw0#35h(&a35^kq)@4!d!-fk5mp-+8pnklg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    env("NGROK_DOMAIN")
+]
 
 
 # Application definition
@@ -168,7 +170,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "https://df372f50e101.ngrok.io",
+    "http://72e654745998.ngrok.io",
+    str("https://" + env("NGROK_DOMAIN"))
 ]
 
 CELERY_BROKER_URL = "redis://redis:6379/0"

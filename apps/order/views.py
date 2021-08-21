@@ -9,11 +9,17 @@ from apps.order.serializers import (
 from apps.order.models import Order, Cart
 from apps.accounts.models import Address
 from apps.inventory.models import Stock
+from rest_framework.views import APIView
 import logging
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework.exceptions import PermissionDenied
 from apps.order.forms import FilterClientOrder
 from django_filters import rest_framework as filters
+from django.http import HttpResponse
+from apps.order.utils import MpesaGateway
+import json
+
+
 
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO)
@@ -103,3 +109,15 @@ class CartViewset(viewsets.ModelViewSet):
         instance.delete()
 
 
+class MpesaPayment(APIView):
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get(self, *args, **kwargs):
+        mpesa = MpesaGateway()
+        resp = mpesa.refresh_token()
+        return HttpResponse(resp)
+
+    def post(self, request, *args, **kwargs):
+        logger.info(request.data)
+        return HttpResponse(request.data)
