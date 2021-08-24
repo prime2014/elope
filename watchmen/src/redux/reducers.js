@@ -131,7 +131,8 @@ export const progress = (
 
 export const orderDetail = (
     state = {
-        order: {}
+        order: {},
+        payment: ""
     },
     action
 ) => {
@@ -141,6 +142,41 @@ export const orderDetail = (
             return state;
         case actionTypes.ADD_ORDER_SHIPPING:
             state = {...state, order:{...action.payload}};
+            return state;
+        case actionTypes.SET_PAYMENT_MEANS:
+            state = {...state, payment: action.payload}
+            return state;
+        default:
+            return state;
+    }
+}
+
+
+export const orderPlaced = (
+    state = {
+        placed: {}
+    },
+    action
+) => {
+    switch(action.type){
+        case actionTypes.SET_PLACED_ORDER:
+            state = {...state, placed:action.payload}
+            return state;
+        default:
+            return state;
+    }
+}
+
+
+export const promptSMS = (
+    state = {
+        status: {}
+    },
+    action
+) => {
+    switch(action.type){
+        case actionTypes.SENDING_STK_PROMPT:
+            state = {...state, status: action.payload}
             return state;
         default:
             return state;

@@ -34,6 +34,8 @@ SECRET_KEY = 'django-insecure-12t=j=w)y_+bnlwlw0#35h(&a35^kq)@4!d!-fk5mp-+8pnklg
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
     env("NGROK_DOMAIN")
 ]
 
@@ -171,8 +173,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://df372f50e101.ngrok.io",
-    "http://72e654745998.ngrok.io",
     str("https://" + env("NGROK_DOMAIN"))
 ]
 
@@ -260,5 +260,3 @@ INTERNAL_IPS = [
 
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + INTERNAL_IPS
-
-PHONENUMBER_DB_FORMAT = "E164"

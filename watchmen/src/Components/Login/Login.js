@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Navbar from "../../common/Navbar.ui";
-import { Formik } from "formik";
 import { Link } from "react-router-dom";
 import { Button } from 'primereact/button';
 import {Checkbox} from 'primereact/checkbox';
@@ -48,7 +47,7 @@ class Login extends Component{
 
     handleSubmit = event => {
         let that = this;
-        let { email, password, ...rest } = that.state;
+        let { email, password } = that.state;
         event.preventDefault();
         that.setState({
             loading:true
@@ -63,7 +62,7 @@ class Login extends Component{
                         if (data.token){
                             store.dispatch(setLoginCredentials(data));
                             that.setState({ loading:false }, ()=>{
-                                cookie.save("authToken", data.token, { path: "/", expires, maxAge: 1209600, domain: "127.0.0.1", httpOnly: false});
+                                cookie.save("authToken", data.token, { path: "/", expires, maxAge: 1209600, domain: "127.0.0.1", httpOnly: false, sameSite: "lax"});
                                 that.props.history.push("/products");
                             })
                             return "login successful!";

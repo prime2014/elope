@@ -96,3 +96,24 @@ export const addOrderShipping = payload => {
         payload
     }
 }
+
+export const setPaymentMeans = payload => {
+    return {
+        type:actionTypes.SET_PAYMENT_MEANS,
+        payload
+    }
+}
+
+export const setPlacedOrder = payload => {
+    return {
+        type: actionTypes.SET_PLACED_ORDER,
+        payload
+    }
+}
+
+export const sendingPromptSTK = payload =>{
+    return {
+        type: actionTypes.SENDING_STK_PROMPT,
+        payload
+    }
+}

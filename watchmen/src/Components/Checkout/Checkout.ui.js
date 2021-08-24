@@ -3,17 +3,17 @@ import Navbar from "../../common/Navbar.ui";
 import PageBanner from "../../common/page_banner";
 import { Link } from "react-router-dom";
 import { Button } from 'primereact/button';
-import { Dropdown } from 'primereact/dropdown';
-import { RadioButton } from 'primereact/radiobutton';
 import { Checkbox } from 'primereact/checkbox';
 import  { connect } from "react-redux";
 import { dispatchSetOrderDetail } from "../../redux/dispatchActions";
 import { SplitButton } from 'primereact/splitbutton';
 import toast, { Toaster } from "react-hot-toast";
 import { orderAPI } from "../../services/order/order.service";
-import { Messages } from 'primereact/messages';
 import { Message } from 'primereact/message';
-import { addOrderShipping } from "../../redux/actions";
+import { addOrderShipping, setPaymentMeans } from "../../redux/actions";
+import { store } from "../../redux/configureStore";
+import { confirmDialog } from 'primereact/confirmdialog';
+import { setPlacedOrder } from "../../redux/actions";
 
 
 class Checkout extends Component{
@@ -63,7 +63,7 @@ class Checkout extends Component{
     }
 
     componentDidMount(){
-        let { cart, order_id } = this.props;
+        let { order_id } = this.props;
         if(order_id) this.props.dispatchSetOrderDetail(order_id);
     }
 
@@ -174,8 +174,44 @@ class Checkout extends Component{
    }
 
    handlePlaceOrder = event => {
+        let { order, payment } = this.props;
 
-   }
+        let items = Object.keys(order).length ? order.item_order : [];
+        let prices = items ? items.map(a => parseFloat(a.net_total)) : [];
+        let sub_total = prices.length ? parseFloat(prices.reduce((a, b)=> a + b)).toFixed(2) : 0;
+        if(!this.props.payment){
+            confirmDialog({
+                message: 'Click dropdown arrow on checkout button to select payment.',
+                header: 'Payment Unknown',
+                icon: 'pi pi-exclamation-triangle',
+                acceptLabel: "OK",
+                rejectLabel: "Exit"
+            });
+        } else {
+            let that = this
+            let data = {sub_total, total: sub_total }
+            let place_order = orderAPI.placeOrder(order.id, data)
+            toast.promise(place_order, {
+                loading: "Please wait while we place your order...",
+                success: (data) =>{
+                    console.log(data);
+                    store.dispatch(setPlacedOrder(data));
+                    that.props.history.push(`/payment/gateway/${payment}`);
+                    return "Your order was succesffully placed";
+                },
+                error: err => Object.keys(err)[0]
+                },
+                {
+                    style: {
+                     borderRadius: '10px',
+                     background: '#333',
+                     color: '#fff',
+                    },
+                }
+            )
+        }
+    }
+
 
     render(){
         let { cart, order } = this.props;
@@ -188,36 +224,28 @@ class Checkout extends Component{
                 label: 'Pay through Mpesa',
                 icon: 'pi pi-mobile',
                 command: (e) => {
-                    this.setState({
-                        payment_means: "m-pesa"
-                    })
+                    store.dispatch(setPaymentMeans("MPESA"))
                 }
             },
             {
                 label: 'Paypal',
                 icon: 'pi pi-paypal',
                 command: (e) => {
-                    this.setState({
-                        payment_means: "paypal"
-                    })
+                    store.dispatch(setPaymentMeans("PAYPAL"))
                 }
             },
             {
                 label: 'Pay through bank',
                 icon: 'pi pi-credit-card',
                 command: (e) => {
-                    this.setState({
-                        payment_means: "bank"
-                    })
+                    store.dispatch(setPaymentMeans("BANK"))
                 }
             },
             {
                 label: 'Cash on delivery',
                 icon: 'pi pi-money-bill',
                 command: (e) => {
-                    this.setState({
-                        payment_means: "cod"
-                    })
+
                 }
             }
         ]
@@ -360,7 +388,10 @@ const mapStateToProps = (state, ownProps)=>{
     return {
         cart: state.cartItems.cart,
         order: state.orderDetail.order,
-        order_id:state.cartItems.order_id
+        payment: state.orderDetail.payment,
+        order_id:state.cartItems.order_id,
+        user: state.login.uid.id,
+        placed: state.orderPlaced.placed
     }
 }
 

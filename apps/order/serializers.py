@@ -162,7 +162,6 @@ class OrderSerializer(serializers.ModelSerializer):
         return models.Order.objects.create(**validated_data)
 
 
-
 class PlaceOrderSerializer(OrderSerializer):
     class Meta(OrderSerializer.Meta):
         fields = (

@@ -1,6 +1,7 @@
 import axios from "axios";
 import cookie from "react-cookies";
 
+
 let baseURL = process.env.REACT_APP_API_URL;
 
 let client = axios.create({
@@ -37,9 +38,21 @@ const addShippingAddress = async (pk, address) => {
     }
 }
 
-
+const placeOrder = async (pk, data) => {
+    axios.defaults.headers = {"Content-Type": "application/json", "Authorization": `Token ${cookie.load("authToken")}`}
+    axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+    try {
+        let state = null;
+        let response = await axios.put(`/orders/api/v1/place-order/${pk}/`, {'status': 'PLACED', ...data});
+        if (response) state = response.data;
+        return state;
+    } catch(error){
+        return error.response.data;
+    }
+}
 
 export const orderAPI = {
     getOrderDetail,
-    addShippingAddress
+    addShippingAddress,
+    placeOrder
 }

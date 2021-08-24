@@ -8,6 +8,8 @@ import PrimeReact from "../node_modules/primereact/api";
 import ProductDetail from "./Components/ProductDetail/Detail";
 import AccountActivation from "./Components/activation/AccountActivation";
 import SignUp from "./Components/Register/SignUp";
+import Payment from "./Components/Payment/Payment";
+
 
 PrimeReact.ripple = true;
 
@@ -24,6 +26,7 @@ function App() {
                 <Route path="/detail/:slug/:id" component={ ProductDetail } />
                 <Route path="/activation/:id/:token" component= { AccountActivation } />
                 <Route path="/register" component={ SignUp } />
+                <Route path="/payment/gateway/:pay" component= { Payment } />
             </Switch>
         </div>
     </BrowserRouter>

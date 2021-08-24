@@ -1,11 +1,8 @@
 import axios from "../axios.config";
-import {store} from "../../redux/configureStore";
-import { setLoginCredentials } from "../../redux/actions";
 import cookie from "react-cookies";
 
 
 const loginUser = async (credentials) => {
-
     try{
         let user = null;
         let response = await axios.post('/accounts/api/login/', {...credentials});

@@ -47,6 +47,23 @@ code {
     margin-top:10px;
 }
 
+.phoneno {
+    margin:0 auto;
+}
+
+
+.summary {
+    width:60vw;
+    margin: auto;
+    padding:20px 0;
+    text-align: center;
+}
+
+.context-summary {
+    margin:20px 0;
+}
+
+
 .sign-out {
     cursor: pointer;
 }
@@ -55,6 +72,18 @@ code {
     color: darkslateblue;
     font-weight: bold;
 }
+
+.pi-check {
+    color: green;
+    font-weight: bold;
+}
+
+.authorize-payment {
+    margin:0 auto;
+    position: relative;
+    display: block;
+}
+
 
 .first-decima {
     border-bottom:1px solid #ccc;

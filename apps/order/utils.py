@@ -12,9 +12,8 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
-
-
 env = environ.Env()
+
 
 class MpesaGateway:
     expiry = None
@@ -51,7 +50,7 @@ class MpesaGateway:
             self.__class__.token = access.get("access_token")
             return access
 
-    def refresh_token(self):
+    def refresh_token(self, amount, phone):
         """Refreshes the access token upon expiry"""
         if MpesaGateway.expiry is None or MpesaGateway.expiry < time.time():
             try:
@@ -59,11 +58,11 @@ class MpesaGateway:
             except BaseException as exc:
                 raise BaseException(exc)
             else:
-                return self.send_payment()
+                return self.send_payment(amount, phone)
         else:
-            return self.send_payment()
+            return self.send_payment(amount, phone)
 
-    def send_payment(self):
+    def send_payment(self, amount, phone):
         """Send the payment details to the sandbox api endpoint"""
         headers = dict()
         headers["Authorization"] = f"Bearer {MpesaGateway.token}"
@@ -72,10 +71,10 @@ class MpesaGateway:
             "Password": self.password,
             "Timestamp": self.timestamp,
             "TransactionType": self.transactiontype,
-            "Amount": 1,
-            "PartyA": "254703158509",
+            "Amount": amount,
+            "PartyA": phone,
             "PartyB": int(self.BusinessShortCode),
-            "PhoneNumber": "254703158509",
+            "PhoneNumber": phone,
             "CallBackURL": self.callBackUrl,
             "AccountReference": self.account_reference,
             "TransactionDesc": "Payment of ORDER"
@@ -88,5 +87,5 @@ class MpesaGateway:
         else:
             logger.info(req.text)
             logger.info(req.headers)
-            return req
+            return json.dumps(req.json())
 

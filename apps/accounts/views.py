@@ -6,7 +6,7 @@ from django.contrib.auth import login, logout
 from apps.accounts.tasks import send_activation_link
 from apps.accounts.utils import activation_token
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
+from django.contrib.sessions.backends.db import SessionStore
 
 
 class AddressViewset(viewsets.ModelViewSet):
@@ -37,6 +37,9 @@ class LoginAPIView(APIView):
         user = auth.authenticate(request=request, username=email, password=password)
         if user:
             login(request, user)
+            s = SessionStore()
+            s['user_id'] = user.pk
+            s.create()
             return response.Response({
                 'token': user.auth_token.key,
                 'user': serializers.UserSerializer(user).data
@@ -73,7 +76,6 @@ class UserViewset(viewsets.ModelViewSet):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def partial_update(self, request, *args, **kwargs):
         token = request.data.get("token")

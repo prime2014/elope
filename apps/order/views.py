@@ -16,10 +16,8 @@ from rest_framework.exceptions import PermissionDenied
 from apps.order.forms import FilterClientOrder
 from django_filters import rest_framework as filters
 from django.http import HttpResponse
-from apps.order.utils import MpesaGateway
+from apps.order.tasks import send_payment_details
 import json
-
-
 
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO)
@@ -65,7 +63,6 @@ class OrderViewset(viewsets.ModelViewSet):
                 return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return None
-
 
 
 class PlaceOrderViewset(viewsets.ModelViewSet):
@@ -114,9 +111,8 @@ class MpesaPayment(APIView):
     permission_classes = ()
 
     def get(self, *args, **kwargs):
-        mpesa = MpesaGateway()
-        resp = mpesa.refresh_token()
-        return HttpResponse(resp)
+        result = send_payment_details.delay()
+        return HttpResponse(result.get())
 
     def post(self, request, *args, **kwargs):
         logger.info(request.data)

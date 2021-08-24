@@ -12,7 +12,9 @@ import {
     productDetail,
     login,
     progress,
-    orderDetail
+    orderDetail,
+    orderPlaced,
+    promptSMS
 } from "./reducers";
 
 const persistConfig = {
@@ -28,7 +30,9 @@ let reducer = combineReducers({
     productDetail,
     login,
     progress,
-    orderDetail
+    orderDetail,
+    orderPlaced,
+    promptSMS
 });
 
 const rootReducers = (state, action) => {
