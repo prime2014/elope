@@ -10,9 +10,18 @@ import { Rating } from 'primereact/rating';
 import PropTypes from "prop-types";
 import { Galleria } from 'primereact/galleria';
 import { Avatar } from 'primereact/avatar';
+import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate } from "../../redux/actions";
+import CartAddSubtractBtn from "../../common/CartAddSubtractBtn";
 
 
 class ProductDetail extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            updated_items: []
+        }
+
+    }
 
     componentDidMount(){
         let pk = this.props.match.params.id;
@@ -33,10 +42,38 @@ class ProductDetail extends Component {
         return <img src={item} alt="product" style={{ width: "60px", display: 'block', height: "75px", margin:"5px 10px"}} />;
     }
 
+    handleValueChange = (event, item) => {
+        console.log(item);
+        event.target['product'] = item.item;
+
+        let exists = this.state.updated_items.find(item=> item.name === event.target.name)
+        if(exists){
+            let products = this.state.updated_items;
+            let index = products.findIndex(item=> item.name === exists.name);
+            products.splice(index, 1, event.target);
+            this.setState({
+                updated_items: products
+            })
+        } else {
+            this.setState({
+                updated_items: [...this.state.updated_items, event.target]
+            })
+        }
+    }
+
+    handleUpdateValue = (event, rowData)=>{
+        let value = event.target.value;
+        rowData.quantity = value;
+        rowData.net_total = rowData.quantity * rowData.price;
+        this.props.dispatchUpdate(rowData)
+    }
+
     render(){
         console.log(this.props);
         let { product, cart } = this.props;
         let data = product ? product : {};
+        let cart_item = cart.length ? cart.find(item=> item.item === product.id) : null;
+        console.log(cart_item)
         let responsiveOptions = [
             {
                 breakpoint: '1024px',
@@ -82,9 +119,13 @@ class ProductDetail extends Component {
                             <p>Rating: {data.rating}  <Rating value={data.rating} style={{ 'color':'goldenrod' }} stars={5} cancel={false}/></p>
                             <p className="pt-5">{data.short_description}</p>
                             <div className="pt-4 pd-quantity pb-5">
+                                {cart_item ?
+                                <CartAddSubtractBtn rowData={cart_item} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
+                                :
                                 <InputNumber inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
                                 decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-angle-up" decrementButtonIcon="pi pi-angle-down"
                                 value={1} prefix="Qty  " />
+                                }
 
                                 <Button className="pd-cart" label="Add To Cart" icon="pi pi-shopping-cart" iconPos="left" />
                             </div>
@@ -146,12 +187,15 @@ ProductDetail.propTypes = {
 const mapStateToProps = (state) => {
     return {
         product: state.productDetail.product,
-        cart: state.cartItems.cart
+        cart: state.cartItems.cart,
     }
 }
 
 const mapDispatchToProps = {
-    dispatchProductDetail
+    dispatchProductDetail,
+    dispatchUpdate,
+    deleteCartItem,
+    dispatchCartItemDelete
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);

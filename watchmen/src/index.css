@@ -536,6 +536,19 @@ footer {
     color:white;
 }
 
+.xtimes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+blockquote {
+    font-size: 18px;
+    color:#777;
+    font-style: italic;
+    padding:10px 5px;
+}
+
 footer section {
     width:75vw;
     margin:0 auto;
@@ -933,9 +946,13 @@ footer section {
     text-align:center;
 }
 .trendy {
-    width: 75vw;
-    margin:0 auto;
+    width: 80vw;
+    margin:20px auto;
     padding:30px 0;
+}
+
+.trendy h3 {
+    margin: 30px 60px;
 }
 
 .App > div > div div:last-child div:first-child svg{
@@ -950,8 +967,47 @@ footer section {
 }
 
 .testimony {
-    background-color:#F3EAD8;
+    background-color:#dfe3ee;
     padding:30px 0;
+}
+
+.tabmenu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.confess {
+    padding:20px 0;
+}
+
+.features {
+    background-color: #eee;
+}
+
+.p-carousel-indicators {
+    display: none !important;
+}
+
+.samply {
+    object-fit: cover;
+}
+
+.clock-carousel {
+    width:85vw;
+    margin:0 auto;
+}
+
+.clock {
+    margin:0 15px;
+}
+
+.testimonials img {
+    border-radius: 50%;
+    border:3px solid white;
+    box-shadow: 2px 2px 5px #ccc;
+    object-fit: cover;
 }
 
 .testimonials {
@@ -960,7 +1016,10 @@ footer section {
 }
 .testimonials p{
     text-align:center;
-    font-size:21px;
+}
+
+.testimonials h6 {
+    font-weight: bold;
 }
 .testimonials h2 {
     padding:10px 0;

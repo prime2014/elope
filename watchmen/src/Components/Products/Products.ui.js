@@ -6,7 +6,14 @@ import { dispatchProductList } from "../../redux/dispatchActions";
 import { Button } from 'primereact/button';
 import { Link } from "react-router-dom";
 import { cartAPI } from "../../services/cart/cart.service";
-import { addItemToCart, updateCartItem, setProductList, setOrderDetail, setCartItems } from "../../redux/actions";
+import {
+    addItemToCart,
+    updateCartItem,
+    setProductList,
+    setOrderDetail,
+    setCartItems,
+    updateQuantityAndTotal
+} from "../../redux/actions";
 import PropTypes from "prop-types";
 import toast, { Toaster } from "react-hot-toast";
 import { Dialog } from 'primereact/dialog';
@@ -57,49 +64,97 @@ class Products extends Component{
         event.currentTarget.firstChild.classList.remove("widen");
     }
 
+    resetLoaders = (spinner, button) =>{
+        spinner.classList.remove("show-spinner");
+        spinner.nextElementSibling.classList.remove("hideBtn");
+        button.removeAttribute("disabled")
+    }
+
+
+    handleSubmitToBackendCart = (spinner, button, item) => {
+        let exists = this.props.cart.find(prod=> prod.item === item.id);
+            toast.promise(
+                cartAPI.addToCart({'item': item.id}),
+                {
+                    loading: "Adding Item to cart...",
+                    success:(data)=> {
+                        if(data['id'] !== undefined && data['id'] !== null){
+                            if (exists) this.props.updateCartItem(data);
+                            else this.props.addItemToCart(data);
+                            this.resetLoaders(spinner, button);
+                            return "Item was successfully added to cart!"
+                        } else {
+                            this.resetLoaders(spinner, button);
+                            return toast.error(Object.values(data.data)[0]);
+                        }
+
+                    },
+                    error: (err)=>{
+                        this.resetLoaders(spinner, button);
+                        return "Item could not be added to cart!"
+                    }
+                },
+                {
+                    style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                    },
+                }
+            )
+    }
+
+    submitToCart = (spinner, button, watch)=>{
+        let exists = this.props.cart.find(prod=> prod.item === watch.id);
+
+        if (exists) {
+            exists.quantity += 1;
+            exists.net_total = exists.quantity * exists.price;
+            this.props.updateQuantityAndTotal(exists);
+            toast.success("Item was successfully added to cart",
+                {
+                    style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                    },
+                }
+            )
+        } else {
+            let product = {
+                product_name: watch.name,
+                item: watch.id,
+                currency: watch.currency,
+                quantity: 1,
+                price: watch.price,
+                net_total: watch.price,
+                image_urls: watch.image_urls
+            }
+            this.props.addItemToCart(product);
+            toast.success("Item was successfully added to cart",
+                {
+                    style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                    },
+                }
+            )
+        }
+        this.resetLoaders(spinner, button);
+    }
+
     handleAddToCart = (event, item) => {
         let spinner = event.currentTarget.firstChild;
         let button = event.currentTarget;
         spinner.classList.add("show-spinner");
         spinner.nextElementSibling.classList.add("hideBtn");
         button.setAttribute("disabled", true);
-        let exists = this.props.cart.find(prod=> prod.item === item.id);
-        toast.promise(
-            cartAPI.addToCart({'item': item.id}),
-            {
-                loading: "Adding Item to cart...",
-                success:(data)=> {
-                    if(data['id'] !== undefined && data['id'] !== null){
-                        if (exists) this.props.updateCartItem(data);
-                        else this.props.addItemToCart(data);
-                        spinner.classList.remove("show-spinner");
-                        spinner.nextElementSibling.classList.remove("hideBtn");
-                        button.removeAttribute("disabled")
-                        return "Item was successfully added to cart!"
-                    } else {
-                        spinner.classList.remove("show-spinner");
-                        spinner.nextElementSibling.classList.remove("hideBtn");
-                        button.removeAttribute("disabled")
-                        return toast.error(Object.values(data.data)[0]);
-                    }
-
-                },
-                error: (err)=>{
-                    spinner.classList.remove("show-spinner");
-                    spinner.nextElementSibling.classList.remove("hideBtn");
-                    button.removeAttribute("disabled");
-                    return "Item could not be added to cart!"
-                }
-            },
-            {
-                style: {
-                 borderRadius: '10px',
-                 background: '#333',
-                 color: '#fff',
-                 },
-             }
-        )
-
+        if (this.props.login){
+            this.handleSubmitToBackendCart(spinner, button, item)
+        } else {
+            this.submitToCart(spinner, button, item)
+        }
     }
 
     handleExpandTab = event => {
@@ -270,7 +325,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
     dispatchProductList,
     addItemToCart,
-    updateCartItem
+    updateCartItem,
+    updateQuantityAndTotal
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products);

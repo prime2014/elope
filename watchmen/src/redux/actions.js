@@ -76,6 +76,13 @@ export const updateCartItem = payload => {
     }
 }
 
+export const updateQuantityAndTotal = payload => {
+    return {
+        type: actionTypes.UPDATE_QUANTITY_AND_NET_TOTAL,
+        payload
+    }
+}
+
 export const deleteCartItem = payload => {
     return {
         type: actionTypes.DELETE_CART_ITEM,
@@ -114,6 +121,21 @@ export const setPlacedOrder = payload => {
 export const sendingPromptSTK = payload =>{
     return {
         type: actionTypes.SENDING_STK_PROMPT,
+        payload
+    }
+}
+
+
+export const dispatchCartItemDelete = payload => {
+    return {
+        type: actionTypes.DISPATCH_DELETE_CART_ITEM,
+        payload
+    }
+}
+
+export const dispatchUpdate = payload => {
+    return {
+        type: actionTypes.DISPATCH_UPDATE,
         payload
     }
 }

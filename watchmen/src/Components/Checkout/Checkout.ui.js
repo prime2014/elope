@@ -63,8 +63,9 @@ class Checkout extends Component{
     }
 
     componentDidMount(){
-        let { order_id } = this.props;
-        if(order_id) this.props.dispatchSetOrderDetail(order_id);
+        let { order_id, login } = this.props;
+
+        if(login && order_id) this.props.dispatchSetOrderDetail(order_id);
     }
 
     handleSubmitShipping = event => {
@@ -212,11 +213,14 @@ class Checkout extends Component{
         }
     }
 
+    authUserTotal = (sub_total) => this.props.order.shipping_price ? parseFloat(sub_total + this.props.order.shipping_price).toFixed(2) : sub_total;
+    notauthUserTotal = (data) => data.length ? parseFloat(data.reduce((p, c)=> parseFloat(p) + parseFloat(c))).toFixed(2): 0;
+
 
     render(){
-        let { cart, order } = this.props;
-
-        let items = Object.keys(order).length ? order.item_order : [];
+        let { cart, order, login } = this.props;
+        let data = cart.map(item=> item.net_total);
+        let items = Object.keys(order).length ? order.item_order : cart;
         let prices = items ? items.map(a => parseFloat(a.net_total)) : [];
         let sub_total = prices.length ? parseFloat(prices.reduce((a, b)=> a + b)).toFixed(2) : 0;
         const utils = [
@@ -353,15 +357,15 @@ class Checkout extends Component{
 
                                     <div className="order-header thread py-2">
                                         <span>SUBTOTAL</span>
-                                        <span>{order.currency} {sub_total}</span>
+                                        <span>{order.currency || "KES"} {login ? sub_total : this.notauthUserTotal(data)}</span>
                                     </div>
                                     <div className="order-header thread py-2">
                                         <span>SHIPPING</span>
-                                        <span>{order.currency} {order.shipping_price ? order.shipping_price : 0}</span>
+                                        <span>{order.currency || "KES"} {order.shipping_price ? order.shipping_price : 0}</span>
                                     </div>
                                     <div className="order-header thread py-2">
                                         <span>TOTAL</span>
-                                        <span>{order.currency} {order.shipping_price ? parseFloat(sub_total + order.shipping_price).toFixed(2) : sub_total}</span>
+                                        <span>{order.currency || "KES"} {login ? this.authUserTotal(sub_total) : this.notauthUserTotal(data)}</span>
                                     </div>
                                     <div className="py-3">
                                         <input type="radio" name="paypal" onChange={this.handlePaypal} checked={this.state.paypal} value="paypal" /> Paypal
@@ -372,7 +376,7 @@ class Checkout extends Component{
 
                                     <div className="notify"><Message severity="warn" text="To complete Checkout you must enter shipping address"></Message></div>
 
-                                    <SplitButton onClick={this.handlePlaceOrder} disabled={order.shipping_address && cart.length ? false : true} label={`Checkout ${order.currency ? order.currency : "KES"}  ${order.shipping_price ? parseFloat(sub_total + order.shipping_price).toFixed(2) : sub_total}`} className="paypal-btn" icon="pi pi-plus"  model={utils}></SplitButton>
+                                    <SplitButton onClick={this.handlePlaceOrder} disabled={ cart.length ? false : true} label={`Checkout ${order.currency ? order.currency : "KES"} ${login ? this.authUserTotal(sub_total) : this.notauthUserTotal(data)}`} className="paypal-btn" icon="pi pi-plus"  model={utils}></SplitButton>
                                 </div>
                            </div>
                         </div>
@@ -391,6 +395,7 @@ const mapStateToProps = (state, ownProps)=>{
         payment: state.orderDetail.payment,
         order_id:state.cartItems.order_id,
         user: state.login.uid.id,
+        login: state.login.login,
         placed: state.orderPlaced.placed
     }
 }

@@ -5,6 +5,7 @@ from channels.db import database_sync_to_async
 from apps.order.models import Order
 from django.contrib.auth import get_user_model
 from apps.order.tasks import send_payment_details
+from rest_framework import exceptions
 
 User = get_user_model()
 
@@ -30,17 +31,21 @@ class MpesaPaymentChannel(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        result = send_payment_details.apply_async(args=[data,],
-            serializer="json",
-            retry=True,
-            retry_policy = {
-                'max_retries': 3,
-                'interval_start':0,
-                'interval_step': 0.2,
-                'interval_max': 0.2
-            }
-        )
-        if result:
-            response = json.loads(result.get())
-            await self.send(text_data=json.dumps(response))
+        try:
+            result = send_payment_details.apply_async(args=[data,],
+                serializer="json",
+                retry=True,
+                retry_policy = {
+                    'max_retries': 3,
+                    'interval_start':0,
+                    'interval_step': 0.2,
+                    'interval_max': 0.2
+                }
+            )
+        except exceptions.APIException():
+            raise exceptions.ErrorDetail("Server response time error")
+        else:
+            if result:
+                response = json.loads(result.get())
+                await self.send(text_data=json.dumps(response))
 

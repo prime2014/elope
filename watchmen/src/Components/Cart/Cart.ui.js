@@ -10,7 +10,9 @@ import { Button } from 'primereact/button';
 import PropTypes from "prop-types";
 import toast, { Toaster } from "react-hot-toast";
 import { cartAPI } from "../../services/cart/cart.service";
-import { deleteCartItem } from "../../redux/actions";
+import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate } from "../../redux/actions";
+import CartAddSubtractBtn from "../../common/CartAddSubtractBtn";
+
 
 class Cart extends Component{
 
@@ -29,6 +31,8 @@ class Cart extends Component{
             this.props.cartItemsDispatch();
         }
     }
+
+    // { id, currency, price, net_total }
 
     nameTemplate = rowData => {
        return rowData.product_name;
@@ -65,17 +69,40 @@ class Cart extends Component{
         }
     }
 
+    handleUpdateValue = (event, rowData)=>{
+        let value = event.target.value;
+        rowData.quantity = value;
+        rowData.net_total = rowData.quantity * rowData.price;
+        this.props.dispatchUpdate(rowData)
+    }
+
     quantityTemplate = rowData => {
+        // if(this.props.login){
+        //     return(
+        //         <>
+        //             <InputNumber name={rowData.id} inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
+        //             decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
+        //             value={rowData.quantity} onValueChange={(event)=>this.handleValueChange(event, rowData)} />
+        //         </>
+        //     )
+        // } else {
+        //     return(
+        //         <>
+        //             <InputNumber name={rowData.item} inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
+        //             decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
+        //             value={rowData.quantity} onValueChange={(event)=>this.handleUpdateValue(event, rowData)} />
+        //         </>
+        //     )
+        // }
+
         return (
-            <>
-                <InputNumber name={rowData.id} inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
-                decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
-                value={rowData.quantity} onValueChange={(event)=>this.handleValueChange(event, rowData)} />
-            </>
+            <CartAddSubtractBtn rowData={rowData} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
         )
     }
 
-    deleteCartItem = item => {
+
+
+    deleteCartFromBackend = (item) => {
         toast.promise(
             cartAPI.deleteCartItem(item.id),
                 {
@@ -97,6 +124,28 @@ class Cart extends Component{
                     },
                 }
             )
+    }
+
+    dispatchDeleteCart = item => {
+        console.log(item);
+        this.props.dispatchCartItemDelete(item.item);
+        toast.success("The item was successfully deleted",
+            {
+                style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                },
+            }
+        )
+    }
+
+    deleteCartItem = item => {
+        if (this.props.login){
+            this.deleteCartFromBackend(item)
+        } else {
+            this.dispatchDeleteCart(item)
+        }
     }
 
     deleteItem = rowData => {
@@ -143,13 +192,13 @@ class Cart extends Component{
                 </PageBanner>
                 <div className="cart-template datatable-responsive-demo">
                     <div>
-                     <DataTable className="p-datatable-responsive-demo" stripedRows scrollable scrollHeight="320px" resizableColumns columnResizeMode="fit" value={cart} header={header}>
-                         <Column field="name" header="Name" body={this.nameTemplate}></Column>
-                         <Column header="Image" body={this.imageBodyTemplate}></Column>
-                         <Column header="Quantity" body={this.quantityTemplate}></Column>
-                         <Column field="price" header="Price" body={this.priceBodyTemplate}></Column>
-                         <Column field="delete" header="Delete" body={this.deleteItem}></Column>
-                      </DataTable>
+                        <DataTable className="p-datatable-responsive-demo" stripedRows scrollable scrollHeight="320px" resizableColumns columnResizeMode="fit" value={cart} header={header}>
+                            <Column field="name" header="Name" body={this.nameTemplate}></Column>
+                            <Column header="Image" body={this.imageBodyTemplate}></Column>
+                            <Column header="Quantity" body={ this.quantityTemplate }></Column>
+                            <Column field="price" header="Price" body={this.priceBodyTemplate}></Column>
+                            <Column field="delete" header="Delete" body={this.deleteItem}></Column>
+                        </DataTable>
                     </div>
                     <div className="cart-action-btns py-3">
                         <div className="btn-wrapper">
@@ -180,14 +229,17 @@ Cart.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        cart: state.cartItems.cart
+        cart: state.cartItems.cart,
+        login: state.login.login
     }
 }
 
 const mapDispatchToProps = {
     cartItemsDispatch,
     dispatchUpdateCartItem,
-    deleteCartItem
+    deleteCartItem,
+    dispatchCartItemDelete,
+    dispatchUpdate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cart);

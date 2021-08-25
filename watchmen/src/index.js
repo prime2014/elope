@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import '../node_modules/primeflex/primeflex.css';
 import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import "../node_modules/primereact/resources/themes/md-light-indigo/theme.css";
 import "../node_modules/primereact/resources/primereact.min.css";
-import 'primeflex/primeflex.css';
 import "../node_modules/primeicons/primeicons.css";
 import './index.css';
 import App from './App';

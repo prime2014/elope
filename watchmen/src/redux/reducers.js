@@ -81,17 +81,34 @@ export const cartItems = (
             new_cart.unshift(action.payload)
             state = {...state, cart:[...new_cart], order_id: action.payload.order_detail}
             return state;
+        case actionTypes.UPDATE_QUANTITY_AND_NET_TOTAL:
+            let copy_cart = state.cart;
+            let ind = copy_cart.findIndex(item=>item.item === action.payload.item);
+            copy_cart.splice(ind, 1, action.payload)
+            state = {...state, cart:[...copy_cart]}
+            return state;
         case actionTypes.UPDATE_CART_ITEM:
             let new_state = state.cart;
             let index = new_state.findIndex(item=> item.id === action.payload.id);
             new_state.splice(index, 1, action.payload)
             state = {...state, cart:[...new_state]}
             return state;
+        case actionTypes.DISPATCH_UPDATE:
+            let cart3 = state.cart;
+            let index3 = cart3.findIndex(item=> item.item === action.payload.item);
+            cart3.splice(index3, 1, action.payload)
+            return {...state, cart:[...cart3]}
         case actionTypes.DELETE_CART_ITEM:
             let cart_items = state.cart;
             let i = cart_items.findIndex(item=> item.id === action.payload);
             cart_items.splice(i, 1);
             state = {...state, cart:[...cart_items]}
+            return state;
+        case actionTypes.DISPATCH_DELETE_CART_ITEM:
+            let cart2 = state.cart;
+            let index2 = cart2.findIndex(item=> item.item === action.payload);
+            cart2.splice(index2, 1);
+            state = {...state, cart: [...cart2]}
             return state;
         default:
             return state;
