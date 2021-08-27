@@ -1,26 +1,36 @@
 from apps.accounts import serializers
-from rest_framework import viewsets, response, status, authentication, permissions
+from rest_framework import (
+    viewsets,
+    response,
+    status,
+    authentication,
+    permissions
+)
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 from apps.order.serializers import (
     OrderSerializer,
     CartSerializer,
-    PlaceOrderSerializer
+    PlaceOrderSerializer,
+    BatchCartSerializer
 )
 from apps.order.models import Order, Cart
 from apps.accounts.models import Address
 from apps.inventory.models import Stock
 from rest_framework.views import APIView
 import logging
-from django.shortcuts import get_object_or_404, render
 from rest_framework.exceptions import PermissionDenied
 from apps.order.forms import FilterClientOrder
 from django_filters import rest_framework as filters
 from django.http import HttpResponse
 from apps.order.tasks import send_payment_details
-import json
+from rest_framework.response import Response
+from rest_framework import status
+from apps.inventory.models import Products
 
 
-logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+                    level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -28,7 +38,8 @@ class OrderViewset(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     permission_classes = ()
-    authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+    authentication_classes = (authentication.TokenAuthentication,
+                              authentication.SessionAuthentication)
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FilterClientOrder
 
@@ -36,7 +47,8 @@ class OrderViewset(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             qs = Order.objects.all().order_by("-date_of_order")
         elif self.request.user.is_authenticated:
-            qs = Order.objects.filter(customer=self.request.user).order_by("-date_of_order")
+            qs = Order.objects.filter(customer=self.request.user).order_by(
+                "-date_of_order")
         else:
             qs = None
         return qs
@@ -63,6 +75,45 @@ class OrderViewset(viewsets.ModelViewSet):
                 return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return None
+
+
+class BatchOrderViewset(viewsets.ModelViewSet):
+    authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            qs = Order.objects.all()
+        elif self.request.user.is_authenticated:
+            qs = Order.objects.filter(customer=self.request.user).order_by("-date_of_order")
+        else:
+            qs = None
+        return qs
+
+    def get_product(self, item):
+        return Products.objects.get(pk=item)
+
+    def create(self, request, *args, **kwargs):
+        order, _= Order.objects.get_or_create(customer=request.user, status="DRAFT")
+
+        data = [Cart(
+            cart_owner=request.user,
+            quantity=obj.get("quantity"),
+            item= self.get_product(obj.get("item")),
+            order_detail=order,
+            price=obj.get("price"),
+            net_total=obj.get("net_total"))
+            for obj in request.data
+        ]
+        cart_batch =Cart.objects.bulk_create(data)
+        return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+        serializer.save(customer=self.request.user, status="PLACED")
+
+
 
 
 class PlaceOrderViewset(viewsets.ModelViewSet):

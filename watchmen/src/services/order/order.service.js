@@ -51,8 +51,23 @@ const placeOrder = async (pk, data) => {
     }
 }
 
+const placeBatchOrder = async data => {
+    axios.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`;
+    axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+    try {
+        let order = null;
+        let response = await axios.post("/orders/api/v1/batch-order/", [...data]);
+        if (response) order = response.data;
+        console.log(order)
+        return order
+    } catch(error){
+        return error.response.data;
+    }
+}
+
 export const orderAPI = {
     getOrderDetail,
     addShippingAddress,
-    placeOrder
+    placeOrder,
+    placeBatchOrder
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-top_path=/var/lib/jenkins/workspace/Elope
+top_path=/home/prime/Desktop/elope
 code_path=${top_path}
 venv_path=${top_path}/venv
 tasks_project_dir=${code_path}/$1

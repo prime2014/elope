@@ -9,13 +9,14 @@ import { dispatchSetOrderDetail } from "../../redux/dispatchActions";
 import { SplitButton } from 'primereact/splitbutton';
 import toast, { Toaster } from "react-hot-toast";
 import { orderAPI } from "../../services/order/order.service";
-import { Message } from 'primereact/message';
-import { addOrderShipping, setPaymentMeans } from "../../redux/actions";
+import { addOrderShipping, setPaymentMeans, setLoginCredentials } from "../../redux/actions";
 import { store } from "../../redux/configureStore";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { setPlacedOrder } from "../../redux/actions";
 import { Dropdown } from 'primereact/dropdown';
-
+import { Dialog } from 'primereact/dialog';
+import { accountsAPI } from "../../services/accounts/accounts.service";
+import cookie from "react-cookies";
 
 class Checkout extends Component{
 
@@ -36,7 +37,11 @@ class Checkout extends Component{
             address_line_2: "",
             district: "district1",
             postal_code: "",
-            payment_means: "Mpesa"
+            payment_means: "Mpesa",
+            state: false,
+            login_email: "",
+            password: ""
+
 
         };
         this.baseState = this.state;
@@ -175,9 +180,8 @@ class Checkout extends Component{
        })
    }
 
-   handlePlaceOrder = event => {
-        let { order, payment } = this.props;
 
+   placeOrderAPI = (order, payment) => {
         let items = Object.keys(order).length ? order.item_order : [];
         let prices = items ? items.map(a => parseFloat(a.net_total)) : [];
         let sub_total = prices.length ? parseFloat(prices.reduce((a, b)=> a + b)).toFixed(2) : 0;
@@ -196,12 +200,58 @@ class Checkout extends Component{
             },
             {
                 style: {
-                 borderRadius: '10px',
-                 background: '#333',
-                 color: '#fff',
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
                 },
             }
         )
+
+   }
+
+   handlePlaceBatchOrder = () => {
+       let {cart, payment } = this.props;
+
+       let cart_items = cart.map(product=>{
+            return {
+                quantity: product.quantity,
+                item: product.item,
+                price: product.price,
+                net_total: product.net_total
+            }
+       });
+       let batch_order = orderAPI.placeBatchOrder(cart_items);
+        toast.promise(batch_order,{
+            loading: "Please wait while we place your order...",
+            success: (data) =>{
+                console.log(data);
+                store.dispatch(setPlacedOrder(data));
+                // this.props.history.push(`/payment/gateway/${payment}`);
+                return "Your order was successfully placed";
+            },
+            error: err => Object.keys(err)[0]
+            },
+            {
+                style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                },
+            }
+       )
+
+   }
+
+
+   handlePlaceOrder = event => {
+        let { order, payment, login } = this.props;
+
+        if(login) {
+            this.placeOrderAPI(order, payment);
+        } else {
+            this.setState({ state: true })
+
+        }
 
     }
 
@@ -212,6 +262,60 @@ class Checkout extends Component{
         store.dispatch(setPaymentMeans(event.value))
     }
 
+    hideDetail = event => {
+        this.setState({
+            state: false
+        })
+    }
+
+    handleLogin = event => {
+        event.preventDefault()
+        let { login_email, password } = this.state;
+
+        toast.promise(
+            accountsAPI.loginUser({email: login_email, password}),
+            {
+                loading: "Logging you in: Please wait...",
+                success:(data)=> {
+                    const expires = new Date()
+                    expires.setDate(Date.now() + 1000 * 60 * 60 * 24 * 14)
+                    if (data.token){
+                        store.dispatch(setLoginCredentials(data));
+                        this.setState({ loading:false }, ()=>{
+                            cookie.save("authToken", data.token, { path: "/", expires, maxAge: 1209600, domain: "127.0.0.1", httpOnly: false, sameSite: "lax"});
+                            this.setState({ state: false },()=>this.handlePlaceBatchOrder());
+                        })
+                        return "login successful!";
+                    } else {
+                        this.setState({ loading:false }, ()=>this.msgs1.show({severity: 'error',  detail: Object.values(data)[0]}));
+                    }
+                },
+                error: (err)=>{
+                    this.setState({ loading:false }, ()=>this.msgs1.show({severity: 'error',  detail: Object.values(err)[0]}))
+                }
+            },
+            {
+                style: {
+                 borderRadius: '10px',
+                 background: '#333',
+                 color: '#fff',
+                 },
+             }
+        )
+    }
+
+    handleLoginEmail = event => {
+        this.setState({
+            login_email: event.target.value
+        })
+    }
+
+    handlePassword = event => {
+        this.setState({
+            password: event.target.value
+        })
+    }
+
     render(){
         const citySelectItems = [
             {label: 'Mpesa', value: 'Mpesa'},
@@ -219,6 +323,7 @@ class Checkout extends Component{
             {label: 'Bank', value: 'Bank'}
         ];
         let { cart, order, login } = this.props;
+        console.log(this.state.login_email);
         let data = cart.map(item=> item.net_total);
         let items = Object.keys(order).length ? order.item_order : cart;
         let prices = items ? items.map(a => parseFloat(a.net_total)) : [];
@@ -256,6 +361,21 @@ class Checkout extends Component{
         return(
             <>
             <Toaster />
+            <Dialog header={"Please Login To Continue"} visible={this.state.state} onHide={this.hideDetail} breakpoints={{'960px': '50vw', '640px': '50vw'}} style={{ width: "70vw", position: "fixed", top:40 }}>
+                <form>
+                    <div className="mb-3">
+                        <label>Enter your Email</label>
+                        <input onChange={this.handleLoginEmail} className="form-control" type="email" name="email" placeholder="Enter your email" value={this.state.login_email}/>
+                    </div>
+                    <div className="mb-3">
+                        <label>Enter your password</label>
+                        <input onChange={this.handlePassword} className="form-control" type="password" name="password" placeholder="please Enter your password" value={this.state.password}/>
+                    </div>
+                    <div className="mb-3">
+                        <Button label="Login" onClick={this.handleLogin}/>
+                    </div>
+                </form>
+            </Dialog>
             <Navbar cart={ cart }>
                 <PageBanner>
                     <h2>CHECKOUT</h2>

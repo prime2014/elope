@@ -1,3 +1,4 @@
+import json
 from rest_framework import serializers
 from apps.order import models
 from apps.inventory.models import Products
@@ -7,7 +8,7 @@ from apps.accounts.serializers import UserSerializer, AddressSerializer
 from decimal import Decimal, getcontext
 from django.http import JsonResponse
 import logging
-
+from rest_framework import exceptions
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
 
@@ -120,6 +121,28 @@ class CartSerializer(serializers.ModelSerializer):
         instance.net_total = Decimal(instance.quantity) * Decimal(instance.price)
         instance.save(update_fields=['net_total'])
         return instance
+
+class BatchCartSerializer(CartSerializer):
+    class Meta(CartSerializer.Meta):
+        fields = (
+            "id",
+            "cart_owner",
+            "order_detail",
+            "item",
+            "currency",
+            "quantity",
+            "price",
+            "net_total"
+        )
+        extra_kwargs = {}
+
+    def validate(self, validated_data):
+        return super().validate(validated_data)
+
+
+
+
+
 
 
 class OrderSerializer(serializers.ModelSerializer):
