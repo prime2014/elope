@@ -15,6 +15,8 @@ export LANG=en_US.utf-8
 source ${venv_path}/bin/activate
 
 # install project
+pip install -e ${tasks_project_dir}
+
 
 # run tests
 cd ${start_tests_dir}
