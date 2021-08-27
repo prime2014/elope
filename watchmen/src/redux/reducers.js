@@ -149,7 +149,7 @@ export const progress = (
 export const orderDetail = (
     state = {
         order: {},
-        payment: ""
+        payment: "Mpesa"
     },
     action
 ) => {

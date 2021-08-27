@@ -14,6 +14,7 @@ import { addOrderShipping, setPaymentMeans } from "../../redux/actions";
 import { store } from "../../redux/configureStore";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { setPlacedOrder } from "../../redux/actions";
+import { Dropdown } from 'primereact/dropdown';
 
 
 class Checkout extends Component{
@@ -35,7 +36,7 @@ class Checkout extends Component{
             address_line_2: "",
             district: "district1",
             postal_code: "",
-            payment_means: "unknown"
+            payment_means: "Mpesa"
 
         };
         this.baseState = this.state;
@@ -180,44 +181,43 @@ class Checkout extends Component{
         let items = Object.keys(order).length ? order.item_order : [];
         let prices = items ? items.map(a => parseFloat(a.net_total)) : [];
         let sub_total = prices.length ? parseFloat(prices.reduce((a, b)=> a + b)).toFixed(2) : 0;
-        if(!this.props.payment){
-            confirmDialog({
-                message: 'Click dropdown arrow on checkout button to select payment.',
-                header: 'Payment Unknown',
-                icon: 'pi pi-exclamation-triangle',
-                acceptLabel: "OK",
-                rejectLabel: "Exit"
-            });
-        } else {
-            let that = this
-            let data = {sub_total, total: sub_total }
-            let place_order = orderAPI.placeOrder(order.id, data)
-            toast.promise(place_order, {
-                loading: "Please wait while we place your order...",
-                success: (data) =>{
-                    console.log(data);
-                    store.dispatch(setPlacedOrder(data));
-                    that.props.history.push(`/payment/gateway/${payment}`);
-                    return "Your order was succesffully placed";
+        let that = this
+        let data = {sub_total, total: sub_total }
+        let place_order = orderAPI.placeOrder(order.id, data)
+        toast.promise(place_order, {
+            loading: "Please wait while we place your order...",
+            success: (data) =>{
+                console.log(data);
+                store.dispatch(setPlacedOrder(data));
+                that.props.history.push(`/payment/gateway/${payment}`);
+                return "Your order was successfully placed";
+            },
+            error: err => Object.keys(err)[0]
+            },
+            {
+                style: {
+                 borderRadius: '10px',
+                 background: '#333',
+                 color: '#fff',
                 },
-                error: err => Object.keys(err)[0]
-                },
-                {
-                    style: {
-                     borderRadius: '10px',
-                     background: '#333',
-                     color: '#fff',
-                    },
-                }
-            )
-        }
+            }
+        )
+
     }
 
     authUserTotal = (sub_total) => this.props.order.shipping_price ? parseFloat(sub_total + this.props.order.shipping_price).toFixed(2) : sub_total;
     notauthUserTotal = (data) => data.length ? parseFloat(data.reduce((p, c)=> parseFloat(p) + parseFloat(c))).toFixed(2): 0;
 
+    handlePayment = event => {
+        store.dispatch(setPaymentMeans(event.value))
+    }
 
     render(){
+        const citySelectItems = [
+            {label: 'Mpesa', value: 'Mpesa'},
+            {label: 'Paypal', value: 'Paypal'},
+            {label: 'Bank', value: 'Bank'}
+        ];
         let { cart, order, login } = this.props;
         let data = cart.map(item=> item.net_total);
         let items = Object.keys(order).length ? order.item_order : cart;
@@ -367,15 +367,13 @@ class Checkout extends Component{
                                         <span>TOTAL</span>
                                         <span>{order.currency || "KES"} {login ? this.authUserTotal(sub_total) : this.notauthUserTotal(data)}</span>
                                     </div>
-                                    <div className="py-3">
-                                        <input type="radio" name="paypal" onChange={this.handlePaypal} checked={this.state.paypal} value="paypal" /> Paypal
+                                    <div className="py-3 payment">
+                                        <h6>Select Payment</h6>
+                                        <Dropdown value={this.props.payment} options={citySelectItems} onChange={this.handlePayment} placeholder="Select a payment means"/>
                                     </div>
                                     <div className="conditions pb-3">
                                         <Checkbox onChange={this.handleCheckBox} checked={this.state.checked}></Checkbox> I have read and accept the terms & conditions
                                     </div>
-
-                                    <div className="notify"><Message severity="warn" text="To complete Checkout you must enter shipping address"></Message></div>
-
                                     <SplitButton onClick={this.handlePlaceOrder} disabled={ cart.length ? false : true} label={`Checkout ${order.currency ? order.currency : "KES"} ${login ? this.authUserTotal(sub_total) : this.notauthUserTotal(data)}`} className="paypal-btn" icon="pi pi-plus"  model={utils}></SplitButton>
                                 </div>
                            </div>

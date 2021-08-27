@@ -3,16 +3,16 @@ import Navbar from "../../common/Navbar.ui";
 import PageBanner from "../../common/page_banner";
 import { dispatchProductDetail } from "../../redux/dispatchActions"
 import { connect } from "react-redux";
-import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import { TabView,TabPanel } from 'primereact/tabview';
 import { Rating } from 'primereact/rating';
 import PropTypes from "prop-types";
 import { Galleria } from 'primereact/galleria';
 import { Avatar } from 'primereact/avatar';
-import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate } from "../../redux/actions";
+import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate, addItemToCart } from "../../redux/actions";
 import CartAddSubtractBtn from "../../common/CartAddSubtractBtn";
-
+import toast, { Toaster } from "react-hot-toast";
+import { cartAPI } from "../../services/cart/cart.service";
 
 class ProductDetail extends Component {
     constructor(props){
@@ -20,12 +20,34 @@ class ProductDetail extends Component {
         this.state = {
             updated_items: []
         }
-
     }
 
     componentDidMount(){
         let pk = this.props.match.params.id;
         this.props.dispatchProductDetail(pk);
+    }
+
+    submitToCart = watch=>{
+        let product = {
+            product_name: watch.name,
+            item: watch.id,
+            currency: watch.currency,
+            quantity: 1,
+            price: watch.price,
+            net_total: watch.price,
+            image_urls: watch.image_urls
+        }
+        this.props.addItemToCart(product);
+        toast.success("Item was successfully added to cart",
+            {
+                style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                },
+            }
+        )
+
     }
 
     handleDisplayImage = (event)=>{
@@ -61,6 +83,53 @@ class ProductDetail extends Component {
         }
     }
 
+    deleteCartFromBackend = (item) => {
+        toast.promise(
+            cartAPI.deleteCartItem(item.id),
+                {
+                    loading: "Deleting cart item...",
+                    success: (data)=>{
+                       this.props.deleteCartItem(item.id);
+                       return "Item was successfully deleted"
+                    },
+                    error:(err)=>{
+                        console.log(err);
+                        return "Could not delete cart item"
+                    }
+                },
+                {
+                    style: {
+                       borderRadius: '20px',
+                       background: '#333',
+                       color: '#fff',
+                    },
+                }
+            )
+    }
+
+    dispatchDeleteCart = item => {
+        console.log(item)
+        this.props.dispatchCartItemDelete(item.id);
+        toast.success("The item was successfully deleted",
+            {
+                style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                },
+            }
+        )
+    }
+
+    handleDeleteItem = (item) => {
+        if (this.props.login){
+            let product =this.props.cart.find(prod=> prod.item === item.id);
+            this.deleteCartFromBackend(product)
+        } else {
+            this.dispatchDeleteCart(item)
+        }
+    }
+
     handleUpdateValue = (event, rowData)=>{
         let value = event.target.value;
         rowData.quantity = value;
@@ -89,6 +158,8 @@ class ProductDetail extends Component {
             }
         ];
         return(
+            <>
+            <Toaster />
             <Navbar cart={cart.length ? cart : []}>
                 <PageBanner>
                     <h2>Product Detail</h2>
@@ -120,14 +191,13 @@ class ProductDetail extends Component {
                             <p className="pt-5">{data.short_description}</p>
                             <div className="pt-4 pd-quantity pb-5">
                                 {cart_item ?
+                                <>
                                 <CartAddSubtractBtn rowData={cart_item} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
+                                <i onClick={()=>this.handleDeleteItem(product)} className="pi pi-times-circle mx-4 clear" tooltip="Remove from Cart" title="Remove From Cart"></i>
+                                </>
                                 :
-                                <InputNumber inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
-                                decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-angle-up" decrementButtonIcon="pi pi-angle-down"
-                                value={1} prefix="Qty  " />
+                                <Button onClick={()=>this.submitToCart(product)} className="pd-cart" label="Add To Cart" icon="pi pi-shopping-cart" iconPos="left" />
                                 }
-
-                                <Button className="pd-cart" label="Add To Cart" icon="pi pi-shopping-cart" iconPos="left" />
                             </div>
                         </div>
                     </div>
@@ -173,6 +243,7 @@ class ProductDetail extends Component {
                 </div>
                 </> : " "}
             </Navbar>
+            </>
         )
     }
 }
@@ -188,6 +259,7 @@ const mapStateToProps = (state) => {
     return {
         product: state.productDetail.product,
         cart: state.cartItems.cart,
+        login: state.login.login
     }
 }
 
@@ -195,7 +267,8 @@ const mapDispatchToProps = {
     dispatchProductDetail,
     dispatchUpdate,
     deleteCartItem,
-    dispatchCartItemDelete
+    dispatchCartItemDelete,
+    addItemToCart
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);

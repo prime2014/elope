@@ -77,24 +77,6 @@ class Cart extends Component{
     }
 
     quantityTemplate = rowData => {
-        // if(this.props.login){
-        //     return(
-        //         <>
-        //             <InputNumber name={rowData.id} inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
-        //             decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
-        //             value={rowData.quantity} onValueChange={(event)=>this.handleValueChange(event, rowData)} />
-        //         </>
-        //     )
-        // } else {
-        //     return(
-        //         <>
-        //             <InputNumber name={rowData.item} inputClassName="demon" min={1} id="quantity" showButtons buttonLayout="stacked"
-        //             decrementButtonClassName="darrent" step={1} incrementButtonClassName="darrent" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
-        //             value={rowData.quantity} onValueChange={(event)=>this.handleUpdateValue(event, rowData)} />
-        //         </>
-        //     )
-        // }
-
         return (
             <CartAddSubtractBtn rowData={rowData} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
         )

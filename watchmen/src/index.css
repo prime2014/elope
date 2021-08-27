@@ -19,6 +19,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.p-inputwrapper{
+    line-height:10px;
+    width:100%;
+    margin:10px 0;
+}
+
+.payment h6 {
+    margin:10px 0;
+    padding: 10px 0;
+}
+
+.clear {
+    font-size: 20px;
+    color: crimson;
+    font-weight:bold;
+    cursor: pointer;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
