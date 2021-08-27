@@ -11,8 +11,7 @@ export LC_ALL=en_US.utf-8
 export LANG=en_US.utf-8
 
 
-#virtual environments
-source ${venv_path}/bin/activate
+
 
 # install project
 pip install -e ${tasks_project_dir}
