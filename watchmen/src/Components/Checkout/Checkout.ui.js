@@ -9,7 +9,7 @@ import { dispatchSetOrderDetail } from "../../redux/dispatchActions";
 import { SplitButton } from 'primereact/splitbutton';
 import toast, { Toaster } from "react-hot-toast";
 import { orderAPI } from "../../services/order/order.service";
-import { addOrderShipping, setPaymentMeans, setLoginCredentials } from "../../redux/actions";
+import { addOrderShipping, setPaymentMeans, setLoginCredentials, setOrderDetail } from "../../redux/actions";
 import { store } from "../../redux/configureStore";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { setPlacedOrder } from "../../redux/actions";
@@ -225,8 +225,8 @@ class Checkout extends Component{
             loading: "Please wait while we place your order...",
             success: (data) =>{
                 console.log(data);
-                store.dispatch(setPlacedOrder(data));
-                // this.props.history.push(`/payment/gateway/${payment}`);
+                store.dispatch(setOrderDetail(data));
+                 this.props.history.push(`/payment/gateway/${payment}`);
                 return "Your order was successfully placed";
             },
             error: err => Object.keys(err)[0]
@@ -520,7 +520,8 @@ const mapStateToProps = (state, ownProps)=>{
 
 const mapDispatchToProps = {
     dispatchSetOrderDetail,
-    addOrderShipping
+    addOrderShipping,
+    setOrderDetail
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Checkout);

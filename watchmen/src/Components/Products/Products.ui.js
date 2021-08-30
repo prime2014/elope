@@ -218,7 +218,6 @@ class Products extends Component{
                                 <h1>SHORT DESCRIPTION</h1>
                                 <p>{this.state.product.short_description}</p>
                             </div>
-                            {this.handleProductState()}
                         </div>
                     </div>
                 </Dialog>

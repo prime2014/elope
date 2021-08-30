@@ -102,10 +102,8 @@ class CartSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         # Quantity is the only thing in the cart that needs to be updated
-        super(CartSerializer, self).update(instance, validated_data)
         item = validated_data.get("item")
         new_quantity = validated_data.get("quantity")
-
         diff = new_quantity - instance.quantity
         stock = Stock.objects.get(product=item)
         if diff > 0:
@@ -117,10 +115,10 @@ class CartSerializer(serializers.ModelSerializer):
             stock.increase_stock(abs(diff))
         else:
             instance.quantity = instance.quantity
-        instance.save()
         instance.net_total = Decimal(instance.quantity) * Decimal(instance.price)
-        instance.save(update_fields=['net_total'])
+        instance.save(update_fields=['net_total', 'quantity'])
         return instance
+
 
 class BatchCartSerializer(CartSerializer):
     class Meta(CartSerializer.Meta):

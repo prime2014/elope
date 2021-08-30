@@ -50,35 +50,10 @@ class Cart extends Component{
         return rowData.currency + " " + rowData.net_total;
     }
 
-    handleValueChange = (event, item) => {
-        console.log(item);
-        event.target['product'] = item.item;
-
-        let exists = this.state.updated_items.find(item=> item.name === event.target.name)
-        if(exists){
-            let products = this.state.updated_items;
-            let index = products.findIndex(item=> item.name === exists.name);
-            products.splice(index, 1, event.target);
-            this.setState({
-                updated_items: products
-            })
-        } else {
-            this.setState({
-                updated_items: [...this.state.updated_items, event.target]
-            })
-        }
-    }
-
-    handleUpdateValue = (event, rowData)=>{
-        let value = event.target.value;
-        rowData.quantity = value;
-        rowData.net_total = rowData.quantity * rowData.price;
-        this.props.dispatchUpdate(rowData)
-    }
 
     quantityTemplate = rowData => {
         return (
-            <CartAddSubtractBtn rowData={rowData} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
+            <CartAddSubtractBtn rowData={rowData} />
         )
     }
 
@@ -166,7 +141,6 @@ class Cart extends Component{
         );
         return(
             <>
-            <div><Toaster /></div>
             <Navbar cart={ cart.length ? cart : [] }>
                 <PageBanner>
                     <h2>CART</h2>

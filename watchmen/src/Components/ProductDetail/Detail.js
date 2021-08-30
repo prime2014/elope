@@ -27,28 +27,6 @@ class ProductDetail extends Component {
         this.props.dispatchProductDetail(pk);
     }
 
-    submitToCart = watch=>{
-        let product = {
-            product_name: watch.name,
-            item: watch.id,
-            currency: watch.currency,
-            quantity: 1,
-            price: watch.price,
-            net_total: watch.price,
-            image_urls: watch.image_urls
-        }
-        this.props.addItemToCart(product);
-        toast.success("Item was successfully added to cart",
-            {
-                style: {
-                borderRadius: '10px',
-                background: '#333',
-                color: '#fff',
-                },
-            }
-        )
-
-    }
 
     handleDisplayImage = (event)=>{
         let img = event.target.getAttribute("src");
@@ -62,25 +40,6 @@ class ProductDetail extends Component {
 
     thumbnailTemplate(item) {
         return <img src={item} alt="product" style={{ width: "60px", display: 'block', height: "75px", margin:"5px 10px"}} />;
-    }
-
-    handleValueChange = (event, item) => {
-        console.log(item);
-        event.target['product'] = item.item;
-
-        let exists = this.state.updated_items.find(item=> item.name === event.target.name)
-        if(exists){
-            let products = this.state.updated_items;
-            let index = products.findIndex(item=> item.name === exists.name);
-            products.splice(index, 1, event.target);
-            this.setState({
-                updated_items: products
-            })
-        } else {
-            this.setState({
-                updated_items: [...this.state.updated_items, event.target]
-            })
-        }
     }
 
     deleteCartFromBackend = (item) => {
@@ -130,16 +89,9 @@ class ProductDetail extends Component {
         }
     }
 
-    handleUpdateValue = (event, rowData)=>{
-        let value = event.target.value;
-        rowData.quantity = value;
-        rowData.net_total = rowData.quantity * rowData.price;
-        this.props.dispatchUpdate(rowData)
-    }
-
     render(){
         console.log(this.props);
-        let { product, cart } = this.props;
+        let { product, cart, login } = this.props;
         let data = product ? product : {};
         let cart_item = cart.length ? cart.find(item=> item.item === product.id) : null;
         console.log(cart_item)
@@ -159,7 +111,6 @@ class ProductDetail extends Component {
         ];
         return(
             <>
-            <Toaster />
             <Navbar cart={cart.length ? cart : []}>
                 <PageBanner>
                     <h2>Product Detail</h2>
@@ -192,11 +143,11 @@ class ProductDetail extends Component {
                             <div className="pt-4 pd-quantity pb-5">
                                 {cart_item ?
                                 <>
-                                <CartAddSubtractBtn rowData={cart_item} changeValueAPI={this.handleValueChange} changeValue={this.handleUpdateValue}/>
+                                <CartAddSubtractBtn rowData={cart_item} />
                                 <i onClick={()=>this.handleDeleteItem(product)} className="pi pi-times-circle mx-4 clear" tooltip="Remove from Cart" title="Remove From Cart"></i>
                                 </>
                                 :
-                                <Button onClick={()=>this.submitToCart(product)} className="pd-cart" label="Add To Cart" icon="pi pi-shopping-cart" iconPos="left" />
+                                  <CartAddSubtractBtn rowData={cart_item} />
                                 }
                             </div>
                         </div>

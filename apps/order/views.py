@@ -27,6 +27,11 @@ from apps.order.tasks import send_payment_details
 from rest_framework.response import Response
 from rest_framework import status
 from apps.inventory.models import Products
+from django.db.models.signals import post_save
+from functools import reduce
+from decimal import Decimal, getcontext
+
+getcontext().prec = 2
 
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -107,13 +112,18 @@ class BatchOrderViewset(viewsets.ModelViewSet):
             net_total=obj.get("net_total"))
             for obj in request.data
         ]
-        cart_batch =Cart.objects.bulk_create(data)
+        cart = Cart.objects.bulk_create(data)
+        net_total = [obj.net_total for obj in cart]
+        logger.info(net_total)
+        total = reduce(lambda x, y: Decimal(x) + Decimal(y), net_total)
+        order.status = "PLACED"
+        order.total = total
+        order.sub_total = total
+        order.save(update_fields=["status", "sub_total", "total"])
         return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status="PLACED")
-
-
 
 
 class PlaceOrderViewset(viewsets.ModelViewSet):
@@ -168,3 +178,5 @@ class MpesaPayment(APIView):
     def post(self, request, *args, **kwargs):
         logger.info(request.data)
         return HttpResponse(request.data)
+
+

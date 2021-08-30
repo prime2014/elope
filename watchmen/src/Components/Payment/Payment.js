@@ -30,7 +30,7 @@ class Payment extends Component {
 
     handlePayment = event => {
         event.preventDefault();
-        let data = {total: parseInt(Math.round(this.props.placed.total)), phone: this.state.phone}
+        let data = {total: parseInt(Math.round(this.props.placed.total || this.props.order.total)), phone: this.state.phone}
         let json_data = JSON.stringify(data);
         this.client.send(json_data);
     }

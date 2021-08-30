@@ -7,6 +7,7 @@ import {Checkbox} from 'primereact/checkbox';
 import { Link } from "react-router-dom";
 import { accountsAPI } from "../../services/accounts/accounts.service";
 import toast, { Toaster } from "react-hot-toast";
+import { Dialog } from 'primereact/dialog';
 
 class SignUp extends Component {
     constructor(props){
@@ -18,7 +19,8 @@ class SignUp extends Component {
             password: "",
             confirm_password: "",
             loading: false,
-            checked: false
+            checked: false,
+            success: false
         }
         this.baseState = this.state;
     }
@@ -62,6 +64,12 @@ class SignUp extends Component {
 //    checks the passwords value against the confirm_password value
     validatePassword = () => this.state.password === this.state.confirm_password ? true : false;
 
+    hideDetail = () => {
+        this.setState({
+            success:false
+        })
+    }
+
     handleRegisterUser = (event) => {
         let {
             first_name,
@@ -81,7 +89,7 @@ class SignUp extends Component {
                     {
                         loading: "Registering User...",
                         success: (data)=>{
-                            this.setState(this.baseState);
+                            this.setState({...this.baseState, success: true});
                             return "Account Registration Successful";
                         },
                         error: (err) => {
@@ -107,6 +115,11 @@ class SignUp extends Component {
         return(
            <React.Fragment>
                <div><Toaster /></div>
+               <Dialog header={"Successful Account Registration"} visible={this.state.success} onHide={this.hideDetail} breakpoints={{'960px': '50vw', '640px': '50vw'}} style={{ width: "70vw", position: "fixed", top:40 }}>
+                    <h3>Congratulation on Successful Account Registration</h3>
+                    <p>A validation link has been sent to your email address. Copy/Paste it to your browser to activate your account</p>
+                    <p>Did not receive an email link? <Button label="Resend Link"/></p>
+               </Dialog>
            <Navbar cart={ cart.length ? cart : [] }>
               <PageBanner>
                 <h2>Sign Up</h2>
