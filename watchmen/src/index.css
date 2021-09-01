@@ -953,6 +953,55 @@ footer section {
     transform:translateY(-80px)
 }
 
+.msg-card {
+    width: 50vw;
+    border: 1px solid #ccc;
+    box-shadow: 2px 3px 5px #ccc, -2px 1px 5px #ccc;
+    border-radius: 5px;
+}
+
+.msg-body {
+    padding:20px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.resend-link {
+    line-height: 40px;
+    padding: 10px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: #eee;
+}
+
+.resend-link button {
+    border: none;
+    background-color: rgb(112, 173, 194);
+    box-shadow: 3px 3px 5px #888;
+    color: white;
+}
+
+.msg-card h4 {
+    margin:0 auto;
+    padding:5px 20px;
+    line-height: 60px;
+    border-bottom: 1px solid #ccc;
+}
+
+.mail {
+    color: rgb(112, 173, 194);
+    font-weight: bold;
+}
+
+.shop_now_btn {
+    border: none;
+    line-height: 50px;
+    background-color: #1A1A1D;
+    color:white;
+    padding: 0 20px;
+    box-shadow: 3px 3px 5px #666;
+}
 
 .name-label {
     font-size: 15px;

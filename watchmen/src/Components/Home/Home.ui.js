@@ -189,7 +189,7 @@ class Home extends Component {
                                 pretium ante hendrerit. Fusce euismod tempus tortor, nec gravida tellus venenatis ac.
                                 In euismod mollis ultricies.
                               </motion.p>
-                              <motion.button>Shop now</motion.button>
+                              <motion.button className="shop_now_btn">Shop now</motion.button>
                             </div> :
                               <div className="second">
                                 <h4>Watch Sale</h4>
@@ -199,7 +199,7 @@ class Home extends Component {
                                     pretium ante hendrerit. Fusce euismod tempus tortor, nec gravida tellus venenatis ac.
                                     In euismod mollis ultricies.
                                   </motion.p>
-                                  <motion.button variants={item}>Shop now</motion.button>
+                                  <motion.button className="shop_now_btn" variants={item}>Shop now</motion.button>
                                 </motion.div>
                               </div>
                           }

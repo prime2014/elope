@@ -14,7 +14,8 @@ import {
     progress,
     orderDetail,
     orderPlaced,
-    promptSMS
+    promptSMS,
+    signUp
 } from "./reducers";
 
 const persistConfig = {
@@ -32,7 +33,8 @@ let reducer = combineReducers({
     progress,
     orderDetail,
     orderPlaced,
-    promptSMS
+    promptSMS,
+    signUp
 });
 
 const rootReducers = (state, action) => {

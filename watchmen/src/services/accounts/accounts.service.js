@@ -39,7 +39,19 @@ const registerUser = async credentials => {
         console.log(user);
         return user;
     } catch(error){
-        return error.response;
+        return error.response.data;
+    }
+}
+
+const resendActivationLink = async pk => {
+    try {
+        let status = null;
+        let response = await axios.get(`/accounts/api/v1/users/${pk}/resend_activation_link/`)
+        if (response) status = response.data;
+        console.log(status);
+        return status;
+    } catch(error){
+        return error.response.data;
     }
 }
 
@@ -73,5 +85,6 @@ export const accountsAPI = {
     registerUser,
     getUser,
     activateUserAccount,
-    logoutUser
+    logoutUser,
+    resendActivationLink
 }

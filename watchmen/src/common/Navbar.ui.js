@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Badge } from '../../node_modules/primereact/badge';
 import { NavLink, Link } from "react-router-dom";
-import { Tooltip } from 'primereact/tooltip';
 import { connect } from "react-redux";
 import { refreshCartItem, resetApp } from "../redux/actions";
 import { cartItemsDispatch } from "../redux/dispatchActions";

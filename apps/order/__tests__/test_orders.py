@@ -2,8 +2,11 @@ import pytest
 from apps.order.models import Cart, Order
 from rest_framework.test import APIClient
 
+cart_url = "/orders/api/v1/cart/"
+order_url = "/orders/api/v1/order/"
+
 
 @pytest.mark.django_db(transaction=True)
 def test_cart_addition(user_login, create_products):
-    response = user_login.post('/orders/api/v1/cart/', data={'item':create_products.pk, 'price':create_products.price})
+    response = user_login.post(cart_url, data={'item':create_products.pk, 'price':create_products.price})
     assert response.status_code == 201

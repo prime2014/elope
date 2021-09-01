@@ -20,6 +20,21 @@ export const login = (
 }
 
 
+export const signUp = (
+    state = {
+        user: {}
+    },
+    action
+) => {
+    switch(action.type){
+        case actionTypes.SET_USER_SIGNUP_DETAILS:
+            state = {...state, user:{...action.payload}}
+            return state;
+        default:
+            return state;
+    }
+}
+
 export const trendingWatches = (
     state = {
         trends:[]

@@ -139,3 +139,10 @@ export const dispatchUpdate = payload => {
         payload
     }
 }
+
+export const setSignupUser = payload => {
+    return {
+        type: actionTypes.SET_USER_SIGNUP_DETAILS,
+        payload
+    }
+}

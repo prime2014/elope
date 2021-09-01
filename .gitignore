@@ -9,3 +9,7 @@ pytest.cache/
 ./watchmen/node_modules
 
 .idea/
+
+.coverage
+
+htmlcov/

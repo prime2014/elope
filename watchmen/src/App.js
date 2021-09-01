@@ -9,6 +9,7 @@ import ProductDetail from "./Components/ProductDetail/Detail";
 import AccountActivation from "./Components/activation/AccountActivation";
 import SignUp from "./Components/Register/SignUp";
 import Payment from "./Components/Payment/Payment";
+import EmailConfirmation from "./Components/Confirm/EmailConfirmation";
 
 
 PrimeReact.ripple = true;
@@ -20,6 +21,7 @@ function App() {
             <Switch>
                 <Route path="/" exact component={ HomePage } />
                 <Route exact path="/products" component={ Products } />
+                <Route path="/email-confirmation" component= { EmailConfirmation } />
                 <Route path="/cart" component={ Cart } />
                 <Route path="/login" component={ Login } />
                 <Route path="/checkout" component= { Checkout } />

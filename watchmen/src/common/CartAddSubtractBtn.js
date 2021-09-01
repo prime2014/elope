@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { InputNumber } from 'primereact/inputnumber';
-import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate, addItemToCart } from "../redux/actions";
-import { cartItemsDispatch, dispatchUpdateCartItem } from "../redux/dispatchActions";
+import { dispatchUpdate, addItemToCart } from "../redux/actions";
+import { dispatchUpdateCartItem } from "../redux/dispatchActions";
 import toast, { Toaster } from "react-hot-toast";
 import { Button } from 'primereact/button';
 import { cartAPI } from "../services/cart/cart.service";

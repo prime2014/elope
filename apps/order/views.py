@@ -27,9 +27,9 @@ from apps.order.tasks import send_payment_details
 from rest_framework.response import Response
 from rest_framework import status
 from apps.inventory.models import Products
-from django.db.models.signals import post_save
 from functools import reduce
 from decimal import Decimal, getcontext
+from rest_framework import exceptions
 
 getcontext().prec = 2
 
@@ -51,15 +51,20 @@ class OrderViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_staff:
             qs = Order.objects.all().order_by("-date_of_order")
+            return qs
         elif self.request.user.is_authenticated:
             qs = Order.objects.filter(customer=self.request.user).order_by(
                 "-date_of_order")
+            return qs
         else:
-            qs = None
-        return qs
+            raise exceptions.NotAuthenticated()
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status="DRAFT")
+
+    @action(methods=['POST'], detail=False)
+    def mpesa_callback(self, request, *args, **kwargs):
+        pass
 
     @action(methods=['PATCH', 'GET'], detail=True)
     def add_shipping_address(self, request, *args, **kwargs):

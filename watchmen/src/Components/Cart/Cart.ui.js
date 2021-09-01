@@ -26,10 +26,10 @@ class Cart extends Component{
 
     componentDidMount(){
         let { cart } = this.props;
-        if (cart.length) return;
-        else {
-            this.props.cartItemsDispatch();
-        }
+        // if (cart.length) return;
+        // else {
+        //     this.props.cartItemsDispatch();
+        // }
     }
 
     // { id, currency, price, net_total }
