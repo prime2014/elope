@@ -2,6 +2,8 @@ FROM python:3.8-slim-buster
 
 ENV PYTHONBUFFERED 1
 
+ENV PYTHONDONTWRITEBYTECODE 1
+
 RUN apt-get update \
   # dependencies for building Python packages
   && apt-get install -y build-essential \
