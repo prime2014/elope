@@ -242,3 +242,13 @@ INTERNAL_IPS = [
 
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + INTERNAL_IPS
+
+
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "",
+    }
+}
