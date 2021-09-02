@@ -37,7 +37,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    env("NGROK_DOMAIN")
+    env("NGROK_DOMAIN", default="154-76-171-116.ngrok.io")
 ]
 
 
@@ -174,7 +174,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    str("https://" + env("NGROK_DOMAIN"))
+    str("https://" + env("NGROK_DOMAIN", default="154-76-171-116.ngrok.io"))
 ]
 
 CELERY_BROKER_URL = "redis://redis:6379/0"
