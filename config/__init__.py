@@ -3,4 +3,3 @@ import requests
 
 
 __all__ = ['celery_app', "requests"]
-

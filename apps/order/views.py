@@ -11,8 +11,7 @@ from rest_framework.decorators import action
 from apps.order.serializers import (
     OrderSerializer,
     CartSerializer,
-    PlaceOrderSerializer,
-    BatchCartSerializer
+    PlaceOrderSerializer
 )
 from apps.order.models import Order, Cart
 from apps.accounts.models import Address
@@ -25,7 +24,6 @@ from django_filters import rest_framework as filters
 from django.http import HttpResponse
 from apps.order.tasks import send_payment_details
 from rest_framework.response import Response
-from rest_framework import status
 from apps.inventory.models import Products
 from functools import reduce
 from decimal import Decimal, getcontext
@@ -76,7 +74,8 @@ class OrderViewset(viewsets.ModelViewSet):
             if address.is_valid(raise_exception=True):
                 address.save()
                 a = Address.objects.get(pk=address.data.get("id"))
-                serialize = self.serializer_class(data={'shipping_address': a}, instance=get_object_or_404(Order, pk=kwargs['pk']), partial=True)
+                serialize = self.serializer_class(data={'shipping_address': a},
+                                                  instance=get_object_or_404(Order, pk=kwargs['pk']), partial=True)
                 if serialize.is_valid(raise_exception=True):
                     serialize.save(shipping_address=a)
                     orders = self.serializer_class(instance=get_object_or_404(Order, pk=kwargs['pk']))
@@ -106,12 +105,12 @@ class BatchOrderViewset(viewsets.ModelViewSet):
         return Products.objects.get(pk=item)
 
     def create(self, request, *args, **kwargs):
-        order, _= Order.objects.get_or_create(customer=request.user, status="DRAFT")
+        order, _ = Order.objects.get_or_create(customer=request.user, status="DRAFT")
 
         data = [Cart(
             cart_owner=request.user,
             quantity=obj.get("quantity"),
-            item= self.get_product(obj.get("item")),
+            item=self.get_product(obj.get("item")),
             order_detail=order,
             price=obj.get("price"),
             net_total=obj.get("net_total"))
@@ -183,5 +182,3 @@ class MpesaPayment(APIView):
     def post(self, request, *args, **kwargs):
         logger.info(request.data)
         return HttpResponse(request.data)
-
-

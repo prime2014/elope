@@ -1,11 +1,10 @@
-import __future__
 import requests
 from requests.auth import HTTPBasicAuth
 import json
-from django.conf import settings
 import environ
 from apps.order.mpesa_credentals import URLEnum
-import time, logging
+import time
+import logging
 import base64
 from datetime import datetime
 
@@ -25,7 +24,10 @@ class MpesaGateway:
         self.BusinessShortCode = env("BUSINESS_SHORT_CODE")
         self.passkey = env("PASS_KEY")
         self.timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        self.password = base64.b64encode(str(self.BusinessShortCode + self.passkey + self.timestamp).encode()).decode("UTF-8")
+        self.password = base64.b64encode(str(
+            self.BusinessShortCode +
+            self.passkey +
+            self.timestamp).encode()).decode("UTF-8")
         self.partyB = env("BUSINESS_SHORT_CODE")
         self.callBackUrl = URLEnum.CallBackURL.value
         self.transactiontype = URLEnum.TransactionType.value
@@ -88,4 +90,3 @@ class MpesaGateway:
             logger.info(req.text)
             logger.info(req.headers)
             return json.dumps(req.json())
-

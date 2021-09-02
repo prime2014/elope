@@ -1,4 +1,3 @@
-import json
 from rest_framework import serializers
 from apps.order import models
 from apps.inventory.models import Products
@@ -6,9 +5,7 @@ from django.core import validators
 from apps.inventory.models import Stock
 from apps.accounts.serializers import UserSerializer, AddressSerializer
 from decimal import Decimal, getcontext
-from django.http import JsonResponse
 import logging
-from rest_framework import exceptions
 
 logging.basicConfig(format="%(asctime)s %(levelname)s %(name)s %(message)s", level=logging.INFO)
 
@@ -85,7 +82,11 @@ class CartSerializer(serializers.ModelSerializer):
             cart_item.quantity += quantity
             cart_item.price = cart_item.item.price
         except models.Cart.DoesNotExist:
-            cart_item = models.Cart.objects.create(cart_owner=request.user, item=item, order_detail=order, quantity=quantity)
+            cart_item = models.Cart.objects.create(
+                cart_owner=request.user,
+                item=item,
+                order_detail=order,
+                quantity=quantity)
             cart_item.price = cart_item.item.price
         cart_item.save()
 
@@ -136,11 +137,6 @@ class BatchCartSerializer(CartSerializer):
 
     def validate(self, validated_data):
         return super().validate(validated_data)
-
-
-
-
-
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -200,4 +196,3 @@ class PlaceOrderSerializer(OrderSerializer):
         instance.total = validated_data.get("total", instance.total)
         instance.save()
         return instance
-

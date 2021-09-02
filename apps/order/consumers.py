@@ -1,8 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-import json, logging
-from channels.auth import login
-from channels.db import database_sync_to_async
-from apps.order.models import Order
+import json
+import logging
 from django.contrib.auth import get_user_model
 from apps.order.tasks import send_payment_details
 from rest_framework import exceptions

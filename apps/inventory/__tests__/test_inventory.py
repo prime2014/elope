@@ -1,5 +1,5 @@
 import pytest
-from apps.inventory.models import Category, Products, Stock
+from apps.inventory.models import Category
 from rest_framework.test import APIClient
 import logging
 
@@ -39,7 +39,3 @@ def test_products_api_view():
     request = APIClient()
     response = request.get('/inventory/api/v1/products/')
     assert response.status_code == 200
-
-
-
-

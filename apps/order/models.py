@@ -81,6 +81,9 @@ class Order(models.Model):
     class Meta:
         ordering = ('date_of_order',)
         verbose_name_plural = "Order"
+        constraints = [
+            models.UniqueConstraint(fields=['customer'], condition=Q(status="DRAFT"), name="customer_unique_draft")
+        ]
 
     def cancel_order(self):
         if self.status in ['CONFIRMED']:
@@ -88,12 +91,6 @@ class Order(models.Model):
             return self.save(update_fields=['status'])
         else:
             return None
-
-    class Meta:
-        # This constraint ensures that a user has only one draft order at any time
-        constraints = [
-            models.UniqueConstraint(fields=['customer'], condition=Q(status="DRAFT"), name="customer_unique_draft")
-        ]
 
 
 class Cart(models.Model):

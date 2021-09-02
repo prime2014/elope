@@ -14,7 +14,7 @@ websocket_urlpatterns = [
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": OriginValidator(AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),allowed_origins=[
+        "websocket": OriginValidator(AuthMiddlewareStack(URLRouter(websocket_urlpatterns)), allowed_origins=[
             "http://127.0.0.1:8000",
             "http://localhost:8000"
         ]),

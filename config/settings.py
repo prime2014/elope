@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import pathlib
 from pathlib import Path
-import environ, socket
+import environ
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -177,9 +178,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL # url to store results for tasks
-CELERY_ACCEPT_CONTENT = ["json"] #only accept json serialized content
-CELERY_TASK_SERIALIZER = "json" # serializer for data that is passed on to tasks handlers
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60

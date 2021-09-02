@@ -1,6 +1,4 @@
 from django.db import models
-from django.db.models.deletion import SET_NULL
-from django.utils.translation import ugettext_lazy as _
 from apps.order.models import Order
 
 
@@ -31,4 +29,3 @@ class Transaction(models.Model):
         auto_now_add=True,
         editable=False
     )
-

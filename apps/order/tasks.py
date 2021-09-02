@@ -12,10 +12,8 @@ def send_payment_details(data):
     mpesa = MpesaGateway()
     try:
         resp = mpesa.refresh_token(data.get("total"), data.get("phone"))
-    except exceptions.RequestAborted as exc:
+    except exceptions.RequestAborted:
         raise exceptions.RequestAborted()
     else:
         logging.info("********************* %s" % resp)
         return resp
-
-
