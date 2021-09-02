@@ -8,11 +8,13 @@ services:
       dockerfile: ./utils/postgres/Dockerfile
     image: postgres:12
     container_name: elope_local_postgres
-    environment:
-      - POSTGRES_USER=prime
-      - POSTGRES_PASS=belindat2014
-      - POSTGRES_DB=watchmen
-      - POSTGRES_PORT=5432
+    env_file:
+      - ./.env
+    # environment:
+    #   - POSTGRES_USER=prime
+    #   - POSTGRES_PASS=belindat2014
+    #   - POSTGRES_DB=watchmen
+    #   - POSTGRES_PORT=5432
     volumes:
       - ~/opt/data/vision:/server/service
     networks:
