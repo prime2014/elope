@@ -30,5 +30,8 @@ jobs:
         flake8
     - name: Django Testing
       run: |
-        pytest
+        docker-compose -f local.yml run --rm django pytest
+    - name: Tear down the Stack
+      run: |
+        docker-compose -f local.yml down
 
