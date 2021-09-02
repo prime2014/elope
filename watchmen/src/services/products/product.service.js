@@ -1,5 +1,6 @@
 import { store } from "../../redux/configureStore";
 import axios from "../axios.config";
+import cookie from "react-cookies";
 
 
 const getCategory = async () => {
@@ -26,6 +27,7 @@ const getProductList = async () => {
 }
 
 const getProductsAndOrder = async () => {
+    axios.defaults.headers["Authorization"] = `Token ${cookie.load("authToken")}`;
     let s = store.getState()
     let user_id = s.login.uid.id;
     let baseURL = process.env.REACT_APP_API_URL;

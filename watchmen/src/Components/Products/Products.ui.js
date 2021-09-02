@@ -43,6 +43,7 @@ class Products extends Component{
         let { order, login } = this.props;
         if(login && Object.keys(order).length <= 0){
             productAPI.getProductsAndOrder().then(resp=>{
+                console.log(resp);
                 store.dispatch(setProductList(resp[0].data.results));
                 store.dispatch(setOrderDetail(resp[1].data[0]));
                 if(resp[1].data[0]) store.dispatch(setCartItems(resp[1].data[0].item_order));
