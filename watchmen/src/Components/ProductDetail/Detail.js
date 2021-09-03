@@ -11,8 +11,9 @@ import { Galleria } from 'primereact/galleria';
 import { Avatar } from 'primereact/avatar';
 import { deleteCartItem, dispatchCartItemDelete, dispatchUpdate, addItemToCart } from "../../redux/actions";
 import CartAddSubtractBtn from "../../common/CartAddSubtractBtn";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { cartAPI } from "../../services/cart/cart.service";
+import FadeLoader from "react-spinners/FadeLoader";
 
 class ProductDetail extends Component {
     constructor(props){
@@ -192,7 +193,11 @@ class ProductDetail extends Component {
                         </TabView >
                     </div>
                 </div>
-                </> : " "}
+                </> :
+                <div className="loadr">
+                    <FadeLoader className="loaderr" color={"#ffd700"} loading={true} size={150} />
+                </div>
+                }
             </Navbar>
             </>
         )

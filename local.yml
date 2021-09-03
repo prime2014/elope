@@ -2,6 +2,7 @@ version: "3"
 
 
 services:
+
   postgres:
     build:
       context: .
@@ -10,11 +11,6 @@ services:
     container_name: elope_local_postgres
     env_file:
       - ./.env
-    # environment:
-    #   - POSTGRES_USER=prime
-    #   - POSTGRES_PASS=belindat2014
-    #   - POSTGRES_DB=watchmen
-    #   - POSTGRES_PORT=5432
     volumes:
       - ~/opt/data/vision:/server/service
     networks:
@@ -38,6 +34,22 @@ services:
              python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - postgres
+    networks:
+      - elope-bridge
+
+  ngrok:
+    image: wernight/ngrok
+    container_name: elope_local_ngrok
+    env_file:
+      - ./.env
+    ports:
+      - "4040:4040"
+    command: >
+      sh -c "ngrok http django:8000"
+    volumes:
+      - .:/home/prime/Desktop/ngrok/.ngrok2/
+    depends_on:
+      - django
     networks:
       - elope-bridge
 

@@ -11,7 +11,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { orderAPI } from "../../services/order/order.service";
 import { addOrderShipping, setPaymentMeans, setLoginCredentials, setOrderDetail } from "../../redux/actions";
 import { store } from "../../redux/configureStore";
-import { confirmDialog } from 'primereact/confirmdialog';
 import { setPlacedOrder } from "../../redux/actions";
 import { Dropdown } from 'primereact/dropdown';
 import { Dialog } from 'primereact/dialog';
@@ -318,9 +317,7 @@ class Checkout extends Component{
 
     render(){
         const citySelectItems = [
-            {label: 'Mpesa', value: 'Mpesa'},
-            {label: 'Paypal', value: 'Paypal'},
-            {label: 'Bank', value: 'Bank'}
+            {label: 'Mpesa', value: 'Mpesa'}
         ];
         let { cart, order, login } = this.props;
         console.log(this.state.login_email);
@@ -330,31 +327,10 @@ class Checkout extends Component{
         let sub_total = prices.length ? parseFloat(prices.reduce((a, b)=> a + b)).toFixed(2) : 0;
         const utils = [
             {
-                label: 'Pay through Mpesa',
+                label: 'Send invoice to email',
                 icon: 'pi pi-mobile',
                 command: (e) => {
-                    store.dispatch(setPaymentMeans("MPESA"))
-                }
-            },
-            {
-                label: 'Paypal',
-                icon: 'pi pi-paypal',
-                command: (e) => {
-                    store.dispatch(setPaymentMeans("PAYPAL"))
-                }
-            },
-            {
-                label: 'Pay through bank',
-                icon: 'pi pi-credit-card',
-                command: (e) => {
-                    store.dispatch(setPaymentMeans("BANK"))
-                }
-            },
-            {
-                label: 'Cash on delivery',
-                icon: 'pi pi-money-bill',
-                command: (e) => {
-
+                    return;
                 }
             }
         ]
@@ -388,17 +364,6 @@ class Checkout extends Component{
                     </div>
                     <p className="log-in py-2 px-1">Returning Customer? <Link to="/login">Click here to login</Link></p>
 
-                    <div>
-                        <p className="tale">If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing & Shipping section.</p>
-                    </div>
-                    <div className="py-2">
-                        <input className="credentials" type="text" name="email" placeholder="username or email*" />
-                        <input className="credentials" type="password" name="passsword" placeholder="password*" />
-                    </div>
-                    <div>
-                        <Button className="sign-in" loading={false} loadingOptions={{'position': 'right'}} label="Log In" />
-                    </div>
-                    <p><Link to="/password-reset" className="reset">Lost your password?</Link></p>
                     <div className="row py-3">
                         <div className="col-md-8 col-12">
                             <h5>Shipping Details</h5>

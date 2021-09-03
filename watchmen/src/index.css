@@ -982,6 +982,33 @@ footer section {
     color: white;
 }
 
+.diffident {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.loaderr {
+    padding:30px;
+}
+
+.loadr {
+    text-align: center;
+    padding:30px 0;
+}
+
+.error-code {
+    color:crimson;
+    font-size: 120px;
+}
+
+.error-body {
+    width:60vw;
+    margin:0 auto;
+}
+
 .msg-card h4 {
     margin:0 auto;
     padding:5px 20px;

@@ -156,12 +156,12 @@ class Cart extends Component{
                             <Column field="delete" header="Delete" body={this.deleteItem}></Column>
                         </DataTable>
                     </div>
-                    <div className="cart-action-btns py-3">
+                    {/* <div className="cart-action-btns py-3">
                         <div className="btn-wrapper">
                             <Button onClick={this.handleUpdate} loading={this.state.loading} className="update-cart-btn" loadingOptions={{ 'position': 'right' }} label={this.state.loading ? "Updating...": "Update Cart"}/>
                             <Button label="Close Coupon" className="coupon"/>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="py-3 subtotal px-5">
                         <div className="tally">
                             <span>Subtotal</span>

@@ -24,6 +24,7 @@ import Fifty from "../../images/fifty-fathoms.png";
 import { Paginator } from 'primereact/paginator';
 import { store } from "../../redux/configureStore";
 import { productAPI } from "../../services/products/product.service";
+import ClipLoader from "react-spinners/ClipLoader";
 
 
 class Products extends Component{
@@ -234,7 +235,7 @@ class Products extends Component{
                         <React.Fragment>
                         <div className="category">
                             <ul>
-                                <li><span onClick={this.handleExpandTab}>
+                                <li><span>
                                     Category
                                     <i className="pi pi-angle-down"></i>
                                     </span>
@@ -246,8 +247,8 @@ class Products extends Component{
                                         }) : ""}
                                     </ul>
                                 </li>
-                                <li><span onClick={this.handleExpandTab}>Price <i className="pi pi-angle-down"></i></span></li>
-                                <li><span onClick={this.handleExpandTab}>Brand <i className="pi pi-angle-down"></i></span></li>
+                                <li><span>Price <i className="pi pi-angle-down"></i></span></li>
+                                <li><span>Brand <i className="pi pi-angle-down"></i></span></li>
                             </ul>
                             <div className="filter-class">
                                 <h6>Filter By Color</h6>
@@ -274,7 +275,7 @@ class Products extends Component{
 
                     <div className="col-md-9">
                         <div className="row first-decima">
-                            {products.map(item=>{
+                            {products.length ? products.map(item=>{
                             return(
                                 <div className="col-md-4 product-card">
                                     <div onMouseEnter={(event)=>this.showQuickView(event)} onMouseLeave={(event)=>this.hideEye(event)} className="productss">
@@ -295,7 +296,11 @@ class Products extends Component{
                                     <p>{item.currency} {item.price}</p>
                                 </div>
                             );
-                            })}
+                            }):
+                            <div className="diffident">
+                                <ClipLoader color={"#ffd700"} loading={true} size={80} />
+                            </div>
+                            }
                         </div>
                         <Paginator first={1} rows={10} totalRecords={120}></Paginator>
                     </div>

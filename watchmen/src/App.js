@@ -10,7 +10,7 @@ import AccountActivation from "./Components/activation/AccountActivation";
 import SignUp from "./Components/Register/SignUp";
 import Payment from "./Components/Payment/Payment";
 import EmailConfirmation from "./Components/Confirm/EmailConfirmation";
-
+import Error404 from "./Components/404/404";
 
 PrimeReact.ripple = true;
 
@@ -29,6 +29,7 @@ function App() {
                 <Route path="/activation/:id/:token" component= { AccountActivation } />
                 <Route path="/register" component={ SignUp } />
                 <Route path="/payment/gateway/:pay" component= { Payment } />
+                <Route component={Error404} />
             </Switch>
         </div>
     </BrowserRouter>

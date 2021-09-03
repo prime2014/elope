@@ -9,7 +9,6 @@ import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
 import { Link } from "react-router-dom";
 import Websocket from "react-websocket";
-import { Button } from 'primereact/button';
 import { motion } from "framer-motion";
 import cookies from "react-cookies";
 import AlarmClock from "../../images/clocks/alarm-clock.jpg";
@@ -304,12 +303,12 @@ class Home extends Component {
                     <Carousel responsiveOptions={responsiveOptions} autoplayInterval="3500" circular={false} value={products} itemTemplate={itemTemplate} numVisible={4} numScroll={1}></Carousel>
                   </div>
                 </div>
-                <div className="chat-btn">
+                {/* <div className="chat-btn">
                   <div>
                       <p>How can we help you?</p>
                   </div>
                   <Button tooltip="Ask A Question" className="p-button-raised p-button-rounded" icon="pi pi-comments" iconPos="top"/>
-                </div>
+                </div> */}
             </Navbar>
         )
       }
