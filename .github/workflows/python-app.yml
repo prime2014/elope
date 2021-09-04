@@ -64,4 +64,5 @@ jobs:
 
       - name: Test with pytest
         run: |
-          docker-compose -f local.yml run --rm django pytest
+          docker exec -it elope_local_django bash
+          pytest
