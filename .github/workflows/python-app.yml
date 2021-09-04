@@ -41,6 +41,12 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
+    services:
+      django:
+        image: docker://prime2014/elope_django
+        ports:
+          - 8080:8080
+
     steps:
       - name: Install pytest
         run: |
@@ -48,11 +54,6 @@ jobs:
 
       - name: Test with pytest
 
-        services:
-          django:
-            image: docker://prime2014/elope_django
-            ports:
-              - 8080:8080
         env:
           POSTGRES_HOST: postgres
           POSTGRES_USER: prime
