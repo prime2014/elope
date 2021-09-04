@@ -47,6 +47,12 @@ jobs:
           pip install pytest
 
       - name: Test with pytest
+
+        services:
+          django:
+            image: docker://prime2014/elope_django
+            ports:
+              - 8080:8080
         env:
           POSTGRES_HOST: postgres
           POSTGRES_USER: prime
