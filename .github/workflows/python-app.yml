@@ -54,11 +54,11 @@ jobs:
 
       - name: Test with pytest
 
-        env:
-          POSTGRES_HOST: postgres
-          POSTGRES_USER: prime
-          POSTGRES_PASSWORD: belindat2014
-          POSTGRES_NAME: watchmen
-          POSTGRES_PORT: 5432
+        # env:
+        #   POSTGRES_HOST: postgres
+        #   POSTGRES_USER: prime
+        #   POSTGRES_PASSWORD: belindat2014
+        #   POSTGRES_NAME: watchmen
+        #   POSTGRES_PORT: 5432
         run: |
           docker-compose -f local.yml run --rm django pytest
