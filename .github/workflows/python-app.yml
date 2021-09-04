@@ -61,4 +61,4 @@ jobs:
         #   POSTGRES_NAME: watchmen
         #   POSTGRES_PORT: 5432
         run: |
-          docker-compose -f local.yml run --rm django pytest
+          docker-compose -f ../../local.yml run --rm django pytest
