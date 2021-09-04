@@ -60,5 +60,4 @@ jobs:
         #   POSTGRES_PASSWORD: belindat2014
         #   POSTGRES_NAME: watchmen
         #   POSTGRES_PORT: 5432
-        run: |
-          docker-compose -f ../../local.yml run --rm django pytest
+        run: docker-compose -f local.yml run --rm django pytest
