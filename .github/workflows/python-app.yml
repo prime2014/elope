@@ -41,11 +41,11 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
-    services:
-      django:
-        image: docker://prime2014/elope_django
-        ports:
-          - 8080:8080
+    # services:
+    #   django:
+    #     image: docker://prime2014/elope_django
+    #     ports:
+    #       - 8080:8080
 
     steps:
       - name: Install pytest
