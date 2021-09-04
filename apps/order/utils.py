@@ -82,6 +82,7 @@ class MpesaGateway:
             "TransactionDesc": "Payment of ORDER"
         }
         try:
+            logger.info("THIS IS PAYMENT %s" % payment)
             req = requests.post(url=URLEnum.STK_URL.value, json=payment, headers=headers)
         except BaseException as exc:
             logger.error(exc.with_traceback)

@@ -176,8 +176,7 @@ class MpesaPayment(APIView):
     permission_classes = ()
 
     def get(self, *args, **kwargs):
-        result = send_payment_details.delay()
-        return HttpResponse(result.get())
+        return HttpResponse("<h1>WELCOME</h1>")
 
     def post(self, request, *args, **kwargs):
         logger.info(request.data)

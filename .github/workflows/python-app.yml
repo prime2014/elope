@@ -15,8 +15,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: docker://prime2014/elope_django:latest
+    # container:
+    #   image: docker://prime2014/elope_django:latest
 
     steps:
       - name: Checkout code

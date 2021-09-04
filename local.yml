@@ -45,7 +45,7 @@ services:
     ports:
       - "4040:4040"
     command: >
-      sh -c "ngrok http django:8000"
+      sh -c "ngrok http -auth=prime2014:belindat2014 -subdomain=watchmen django:8000"
     volumes:
       - .:/home/prime/Desktop/ngrok/.ngrok2/
     depends_on:
