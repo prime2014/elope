@@ -17,6 +17,7 @@ services:
       - elope-bridge
 
   django: &django
+    restart: on-failure
     build:
       context: .
       dockerfile: ./utils/django/Dockerfile
