@@ -1,9 +1,4 @@
 from enum import Enum
-import environ
-from django.conf import settings
-
-
-
 
 
 class URLEnum(Enum):

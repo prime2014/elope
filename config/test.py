@@ -43,3 +43,12 @@ REST_FRAMEWORK = {
         # 'maji.account.custom_authenticate.CustomTokenAuthentication',
     ],
 }
+
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "",
+    }
+}

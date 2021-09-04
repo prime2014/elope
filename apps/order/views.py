@@ -22,7 +22,6 @@ from rest_framework.exceptions import PermissionDenied
 from apps.order.forms import FilterClientOrder
 from django_filters import rest_framework as filters
 from django.http import HttpResponse
-from apps.order.tasks import send_payment_details
 from rest_framework.response import Response
 from apps.inventory.models import Products
 from functools import reduce
