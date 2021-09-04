@@ -63,6 +63,5 @@ jobs:
           POSTGRES_PORT: 5432
 
       - name: Test with pytest
-        run: |
-          docker exec -it elope_local_django bash
-          pytest
+        run: docker-compose -f local.yml run --rm django pytest
+
