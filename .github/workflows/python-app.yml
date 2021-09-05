@@ -11,9 +11,9 @@ on:
     branches: [ master ]
 
 jobs:
-#   postgres:
-#     container:
-#       image: postgres:12
+  redis:
+    container:
+      image: redis:alpine
 
   flake8:
 
