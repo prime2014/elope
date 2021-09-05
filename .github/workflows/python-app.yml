@@ -50,6 +50,9 @@ jobs:
       postgres:
         image: docker://postgres:12
 
+      redis:
+        image: docker://redis:alpine
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -57,17 +60,6 @@ jobs:
       - name: Install pytest
         run: |
           pip install pytest
-
-      - name: Install Dependencies
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-#        env:
-#          POSTGRES_HOST: postgres
-#          POSTGRES_NAME: watchmen
-#          POSTGRES_USER: prime
-#          POSTGRES_PASSWORD: belindat2014
-#          POSTGRES_PORT: 5432
 
       - name: Test with pytest
         run: docker-compose -f local.yml run --rm django pytest
