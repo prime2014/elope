@@ -41,6 +41,8 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
+    container:
+
     services:
       django:
         image: docker://prime2014/elope_django
@@ -51,9 +53,9 @@ jobs:
         image: docker://postgres:12
 
       redis:
-        image: docker://redis:alpine
+        image: redis:alpine
         ports:
-          - 6379:6379
+          - 6379/tcp
 
     steps:
       - name: Checkout code
