@@ -56,7 +56,6 @@ jobs:
           - 6379:6379
 
       celery:
-        <<: *django
         image: local_celery
         restart: always
         container_name: elope_local_celery
@@ -67,6 +66,7 @@ jobs:
         depends_on:
           - postgres
           - redis
+          - django
 
     steps:
       - name: Checkout code
