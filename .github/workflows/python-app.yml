@@ -57,7 +57,6 @@ jobs:
 
       celery:
         image: local_celery
-        restart: always
         container_name: elope_local_celery
         ports: []
         command: >
