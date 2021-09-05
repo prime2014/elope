@@ -22,14 +22,14 @@ def test_account_creation(email, first_name, last_name, password):
     assert user.password == password
 
 
-@pytest.mark.django_db(transaction=True)
-def test_user_api_view():
-    url = "/accounts/api/v1/users/"
-    request = APIClient()
-    response = request.post(url, data={
-        "first_name": "Prime",
-        "last_name": "Omondi",
-        "email": "omondiprime@mail.com",
-        "password": "belindat2014"
-    })
-    assert response.status_code == 201
+# @pytest.mark.django_db(transaction=True)
+# def test_user_api_view():
+#     url = "/accounts/api/v1/users/"
+#     request = APIClient()
+#     response = request.post(url, data={
+#         "first_name": "Prime",
+#         "last_name": "Omondi",
+#         "email": "omondiprime@mail.com",
+#         "password": "belindat2014"
+#     })
+#     assert response.status_code == 201
