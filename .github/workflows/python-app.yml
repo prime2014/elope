@@ -55,17 +55,6 @@ jobs:
         ports:
           - 6379:6379
 
-      celery:
-        image: local_celery
-        ports: []
-        # command: >
-        #   sh -c "celery -A config.celery_app worker -l DEBUG
-        #         celery -A config.celery_app beat -l INFO"
-        # depends_on:
-        #   - postgres
-        #   - redis
-        #   - django
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
