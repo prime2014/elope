@@ -57,7 +57,6 @@ jobs:
 
       celery:
         image: local_celery
-        container_name: elope_local_celery
         ports: []
         command: >
           sh -c "celery -A config.celery_app worker -l DEBUG
