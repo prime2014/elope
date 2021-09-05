@@ -58,13 +58,13 @@ jobs:
       celery:
         image: local_celery
         ports: []
-        command: >
-          sh -c "celery -A config.celery_app worker -l DEBUG
-                celery -A config.celery_app beat -l INFO"
-        depends_on:
-          - postgres
-          - redis
-          - django
+        # command: >
+        #   sh -c "celery -A config.celery_app worker -l DEBUG
+        #         celery -A config.celery_app beat -l INFO"
+        # depends_on:
+        #   - postgres
+        #   - redis
+        #   - django
 
     steps:
       - name: Checkout code
