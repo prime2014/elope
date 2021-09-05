@@ -159,6 +159,7 @@ code {
     justify-content: space-around;
     vertical-align: middle;
     padding:0 20px;
+
 }
 
 .left-panel ul, .top-menu ul{
@@ -1139,6 +1140,16 @@ footer section {
     color:white;
 }
 
+.logstate {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.logstate:hover {
+    color: crimson;
+    cursor: pointer;
+}
+
 .category-banner div a {
     color:white;
     font-weight:bold;
@@ -1165,3 +1176,56 @@ footer section {
     justify-content:space-evenly;
 }
 
+@media only screen and (max-width: 620px){
+    .topbar-menu {
+        display:none;
+    }
+
+    .top-menu, .left-panel {
+        flex-direction: column;
+        justify-content: center;
+        vertical-align: center;
+        padding:0 20px;
+
+    }
+
+    .top-menu h2{
+        display: block;
+        font-size: 1.8rem;
+        word-spacing:2px;
+        text-align: center;
+    }
+
+    .left-panel ul{
+        display:none;
+    }
+
+
+    .classify {
+        display:flex;
+        width:60vw;
+        margin: 20px auto;
+        padding: 0 20px;
+        flex-wrap: wrap;
+        justify-content:space-evenly;
+    }
+
+    .category-banner img {
+        width: 300px;
+    }
+
+    .top-menu .menu-icons {
+        font-size: 1.0rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .badge-value {
+        top:5px;
+    }
+
+    .menu-icons li {
+        font-size: 1rem;
+        padding: 0;
+    }
+}

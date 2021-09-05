@@ -6,7 +6,6 @@ import { refreshCartItem, resetApp } from "../redux/actions";
 import { cartItemsDispatch } from "../redux/dispatchActions";
 import Footer from "./Footer";
 import { ScrollTop } from 'primereact/scrolltop';
-import { Avatar } from 'primereact/avatar';
 import { Sidebar } from 'primereact/sidebar';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import cookie from "react-cookies";
@@ -14,6 +13,7 @@ import PropTypes from "prop-types";
 import toast, { Toaster } from "react-hot-toast";
 import { accountsAPI } from "../services/accounts/accounts.service";
 import { store } from "../redux/configureStore";
+
 
 
 class Navbar extends Component{
@@ -130,16 +130,16 @@ class Navbar extends Component{
                     </li>
                 </ul>
             </div>
-            <ul>
-                <li><i onClick={this.showSearch} className="pi pi-search search" style={{ 'fontSize': '1.2rem' }}></i></li>
+            <ul className="menu-icons">
+                <li><i title="search" onClick={this.showSearch} className="pi pi-search search" style={{ 'fontSize': '1.2rem' }}></i></li>
                 <li>
-                    <Avatar label="P" shape="circle" size="large" aria-haspopup aria-controls="overlay_panel" onClick={(e) => this.overlay.current.toggle(e)}/>
+                    <i title="Login/Logout" className="pi pi-user logstate" onClick={(e) => this.overlay.current.toggle(e)}></i>
                     <OverlayPanel ref={this.overlay} showCloseIcon id="overlay_panel"  style={{width: '150px'}} className="overlaypanel-demo">
                        {cookie.load("authToken") ? <span className="sign-out" onClick={this.handleLogOut}>Log Out</span> : <Link to="/login">Login</Link>}
                     </OverlayPanel>
                 </li>
                 <li><NavLink activeStyle={styleSetter} to="/cart">
-                    <i className="pi pi-shopping-cart"></i>
+                    <i className="pi pi-shopping-cart" title="cart"></i>
                     <Badge className="badge-value" value={count ? count : "0"}></Badge>
                     </NavLink>
                 </li>

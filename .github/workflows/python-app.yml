@@ -38,8 +38,6 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
-    container:
-
     services:
       django:
         image: docker://prime2014/elope_django

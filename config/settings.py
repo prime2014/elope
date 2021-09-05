@@ -29,7 +29,7 @@ APPS_DIR = BASE_DIR / "apps"
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-12t=j=w)y_+bnlwlw0#35h(&a35^kq)@4!d!-fk5mp-+8pnklg'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -186,7 +186,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://efd4-105-231-186-15.ngrok.io"
 ]
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_BROKER_URL = env("REDIS_URL")
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -220,9 +220,15 @@ REST_FRAMEWORK = {
 CELERY_TASK_EAGER_PROPAGATES = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "mailhog"
-EMAIL_PORT = 1025
-DEFAULT_FROM_EMAIL = "Elope <elope@elope.co.ke>"
+# EMAIL_HOST = "mailhog"
+# EMAIL_PORT = 1025
+# DEFAULT_FROM_EMAIL = "Elope <elope@elope.co.ke>"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER=env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD=env("EMAIL_HOST_PASSWORD")
+
 
 
 DSC_COUPON_CODE_LENGTH = 16
