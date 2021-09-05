@@ -112,7 +112,16 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {'default': env.db("DATABASE_SECTION")}
+DATABASES = {
+    'default': {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": env("POSTGRES_HOST"),
+        "NAME": env("POSTGRES_DB"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
+        "PORT": env("POSTGRES_PORT")
+    }
+}
 
 
 # Password validation
@@ -164,6 +173,13 @@ MEDIA_ROOT = pathlib.Path.joinpath(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    str("https://" + env("NGROK_DOMAIN", default="00c7-105-231-186-15.ngrok.io")),
+    "https://efd4-105-231-186-15.ngrok.io"
+]
+
+CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     str("https://" + env("NGROK_DOMAIN", default="00c7-105-231-186-15.ngrok.io")),
@@ -244,4 +260,11 @@ INTERNAL_IPS = [
 
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + INTERNAL_IPS
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+    }
+}
 
