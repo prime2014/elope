@@ -47,6 +47,9 @@ jobs:
         ports:
           - 8080:8080
 
+      postgres:
+        image: docker://postgres:12
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
