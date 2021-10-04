@@ -38,21 +38,21 @@ services:
     networks:
       - elope-bridge
 
-  ngrok:
-    image: wernight/ngrok
-    container_name: elope_local_ngrok
-    env_file:
-      - ./.env
-    ports:
-      - "4040:4040"
-    command: >
-      sh -c "ngrok http -auth=prime2014:belindat2014 -subdomain=watchmen django:8000"
-    volumes:
-      - .:/home/prime/Desktop/ngrok/.ngrok2/
-    depends_on:
-      - django
-    networks:
-      - elope-bridge
+#  ngrok:
+#    image: wernight/ngrok
+#    container_name: elope_local_ngrok
+#    env_file:
+#      - ./.env
+#    ports:
+#      - "4040:4040"
+#    command: >
+#      sh -c "ngrok http -auth=prime2014:belindat2014 -subdomain=watchmen django:8000"
+#    volumes:
+#      - .:/home/prime/Desktop/ngrok/.ngrok2/
+#    depends_on:
+#      - django
+#    networks:
+#      - elope-bridge
 
   react:
     build:

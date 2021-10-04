@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 def send_payment_details(data):
     mpesa = MpesaGateway()
     try:
-        resp = mpesa.refresh_token(data.get("total"), data.get("phone"))
+        resp = mpesa.refresh_token(data.get("total"), data.get("phone"), data.get("Callback"))
     except exceptions.RequestAborted:
         raise exceptions.RequestAborted()
     else:

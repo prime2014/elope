@@ -6,7 +6,6 @@ from django.contrib.auth import login, logout
 from apps.accounts.tasks import send_activation_link
 from apps.accounts.utils import activation_token
 from rest_framework.response import Response
-from django.contrib.sessions.backends.db import SessionStore
 from rest_framework.decorators import action
 
 
@@ -37,10 +36,7 @@ class LoginAPIView(APIView):
         auth = AuthenticateUser()
         user = auth.authenticate(request=request, username=email, password=password)
         if user:
-            login(request, user)
-            s = SessionStore()
-            s['user_id'] = user.pk
-            s.create()
+            login(request, user, backend="apps.accounts.auth.AuthenticateUser")
             return response.Response({
                 'token': user.auth_token.key,
                 'user': serializers.UserSerializer(user).data

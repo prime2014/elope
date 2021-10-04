@@ -16,7 +16,6 @@ from apps.order.serializers import (
 from apps.order.models import Order, Cart
 from apps.accounts.models import Address
 from apps.inventory.models import Stock
-from rest_framework.views import APIView
 import logging
 from rest_framework.exceptions import PermissionDenied
 from apps.order.forms import FilterClientOrder
@@ -26,7 +25,13 @@ from rest_framework.response import Response
 from apps.inventory.models import Products
 from functools import reduce
 from decimal import Decimal, getcontext
-from rest_framework import exceptions
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from rest_framework.generics import GenericAPIView
+from django.contrib.auth import get_user
+
+
+channel_layer = get_channel_layer()
 
 getcontext().prec = 2
 
@@ -39,29 +44,26 @@ logger = logging.getLogger(__name__)
 class OrderViewset(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = ()
-    authentication_classes = (authentication.TokenAuthentication,
-                              authentication.SessionAuthentication)
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = [authentication.TokenAuthentication,
+                              authentication.SessionAuthentication]
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FilterClientOrder
+
 
     def get_queryset(self):
         if self.request.user.is_staff:
             qs = Order.objects.all().order_by("-date_of_order")
             return qs
-        elif self.request.user.is_authenticated:
+        elif get_user(self.request).is_authenticated:
             qs = Order.objects.filter(customer=self.request.user).order_by(
                 "-date_of_order")
             return qs
         else:
-            raise exceptions.NotAuthenticated()
+            raise PermissionDenied()
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status="DRAFT")
-
-    @action(methods=['POST'], detail=False)
-    def mpesa_callback(self, request, *args, **kwargs):
-        pass
 
     @action(methods=['PATCH', 'GET'], detail=True)
     def add_shipping_address(self, request, *args, **kwargs):
@@ -83,6 +85,28 @@ class OrderViewset(viewsets.ModelViewSet):
                 return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return None
+
+
+class PaymentForOrders(OrderViewset):
+    OrderViewset.authentication_classes = ()
+    OrderViewset.permission_classes = ()
+
+    @action(methods=['POST'], detail=True)
+    def mpesa(self, request, *args, **kwargs):
+        stkCallback = request.data["Body"]["stkCallback"]
+        if stkCallback["ResultCode"] == 0:
+            logger.info(self.request.data)
+            async_to_sync(channel_layer.group_send(str(self.get_object().pk), {
+                          "type": "payment_result", **request.data}))
+            return HttpResponse(request.data)
+        elif stkCallback["ResultCode"] == 1032:
+            logger.info(request.data)
+            logger.info(self.request.user)
+            data = self.get_object().pk
+            async_to_sync(channel_layer.send(str(data), {"type": "payment_result", **request.data}))
+            return HttpResponse(request.data)
+        else:
+            return HttpResponse("You have insufficient funds in your account")
 
 
 class BatchOrderViewset(viewsets.ModelViewSet):
@@ -170,7 +194,7 @@ class CartViewset(viewsets.ModelViewSet):
         instance.delete()
 
 
-class MpesaPayment(APIView):
+class MpesaPayment(GenericAPIView):
     authentication_classes = ()
     permission_classes = ()
 
@@ -178,5 +202,16 @@ class MpesaPayment(APIView):
         return HttpResponse("<h1>WELCOME</h1>")
 
     def post(self, request, *args, **kwargs):
-        logger.info(request.data)
-        return HttpResponse(request.data)
+        stkCallback = request.data["Body"]["stkCallback"]
+        if stkCallback["ResultCode"] == 0:
+            data = str(request.user).replace(" ", "_")
+            async_to_sync(channel_layer.send(str(data), {"type": "payment_result", **request.data}))
+            return HttpResponse(request.data)
+        elif stkCallback["ResultCode"] == 1032:
+            logger.info(request.data)
+            logger.info(self.request.user)
+            data = str(self.request.user).replace(" ", "_")
+            async_to_sync(channel_layer.group_send(str(data), {"type": "payment_result", **request.data}))
+            return HttpResponse(request.data)
+        else:
+            return HttpResponse("You have insufficient funds in your account")

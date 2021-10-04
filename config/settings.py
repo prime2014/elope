@@ -37,7 +37,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    env("NGROK_DOMAIN", default="00c7-105-231-186-15.ngrok.io"),
+    env("NGROK_DOMAIN"),
     "efd4-105-231-186-15.ngrok.io"
 ]
 
@@ -57,7 +57,8 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     "apps.accounts",
     "apps.inventory",
-    "apps.order"
+    "apps.order",
+    "apps.payments"
 ]
 
 # downloaded apps
@@ -79,6 +80,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,14 +177,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    str("https://" + env("NGROK_DOMAIN", default="00c7-105-231-186-15.ngrok.io")),
+    str("https://" + env("NGROK_DOMAIN")),
     "https://efd4-105-231-186-15.ngrok.io"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    str("https://" + env("NGROK_DOMAIN", default="00c7-105-231-186-15.ngrok.io")),
+    str("https://" + env("NGROK_DOMAIN")),
     "https://efd4-105-231-186-15.ngrok.io"
 ]
 
@@ -226,9 +228,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER=env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD=env("EMAIL_HOST_PASSWORD")
-
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
 
 DSC_COUPON_CODE_LENGTH = 16
@@ -268,8 +269,8 @@ hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + INTERNAL_IPS
 
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+#     }
+# }
