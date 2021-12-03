@@ -50,7 +50,6 @@ class OrderViewset(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FilterClientOrder
 
-
     def get_queryset(self):
         if self.request.user.is_staff:
             qs = Order.objects.all().order_by("-date_of_order")
