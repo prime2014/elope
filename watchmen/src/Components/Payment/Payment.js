@@ -17,7 +17,7 @@ class Payment extends Component {
             phone: "",
             stk_prompt:false
         }
-        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/mpesa/payment/${this.props.user}/`)
+        this.client = new WebSocket(`ws://127.0.0.1:8000/ws/mpesa/payment/${this.props.order.id}/`)
     }
 
 

@@ -52,7 +52,7 @@ class MpesaGateway:
             self.__class__.token = access.get("access_token")
             return access
 
-    def refresh_token(self, amount, phone):
+    def refresh_token(self, amount, phone, url):
         """Refreshes the access token upon expiry"""
         if MpesaGateway.expiry is None or MpesaGateway.expiry < time.time():
             try:
@@ -60,11 +60,11 @@ class MpesaGateway:
             except BaseException as exc:
                 raise BaseException(exc)
             else:
-                return self.send_payment(amount, phone)
+                return self.send_payment(amount, phone, url)
         else:
-            return self.send_payment(amount, phone)
+            return self.send_payment(amount, phone, url)
 
-    def send_payment(self, amount, phone):
+    def send_payment(self, amount, phone, url):
         """Send the payment details to the sandbox api endpoint"""
         headers = dict()
         headers["Authorization"] = f"Bearer {MpesaGateway.token}"
@@ -77,7 +77,7 @@ class MpesaGateway:
             "PartyA": phone,
             "PartyB": int(self.BusinessShortCode),
             "PhoneNumber": phone,
-            "CallBackURL": self.callBackUrl,
+            "CallBackURL": url,
             "AccountReference": self.account_reference,
             "TransactionDesc": "Payment of ORDER"
         }

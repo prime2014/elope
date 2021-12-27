@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator
 from decimal import Decimal, getcontext
 from django.db.models import Q
+from django.db.models.signals import post_save
+from apps.payments.models import Transaction
 
 
 getcontext().prec = 2
@@ -146,3 +148,11 @@ class Cart(models.Model):
     def update_net_total(self) -> any:
         self.net_total = Decimal(self.price) * Decimal(self.quantity)
         self.save(update_fields=['net_total'])
+
+
+def activate_payment(sender, created, instance, **kwargs):
+    if created:
+        Transaction.objects.create(order=instance, customer=instance.customer)
+
+
+post_save.connect(activate_payment, sender=Order)
