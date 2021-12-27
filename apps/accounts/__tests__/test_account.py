@@ -18,8 +18,10 @@ def test_account_creation(email, first_name, last_name, password):
         'password': password
     }
     user = User.objects.create(**data)
-    assert user.email == email
-    assert user.password == password
+    if user.email != email:
+        raise AssertionError
+    if user.password != password:
+        raise AssertionError
 
 # @pytest.mark.django_db(transaction=True)
 # def test_user_api_view():
