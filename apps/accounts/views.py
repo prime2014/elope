@@ -21,8 +21,7 @@ class AddressViewset(viewsets.ModelViewSet):
         if serializers.is_valid():
             serializers.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(APIView):
@@ -41,10 +40,9 @@ class LoginAPIView(APIView):
                 'token': user.auth_token.key,
                 'user': serializers.UserSerializer(user).data
             }, status=status.HTTP_200_OK)
-        else:
-            return response.Response({
-                'error': 'Invalid User Credentials'
-            }, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response({
+            'error': 'Invalid User Credentials'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutAPIView(APIView):
@@ -71,8 +69,7 @@ class UserViewset(viewsets.ModelViewSet):
             user, token = [serializer.data, activation_token.make_token(serializer.data)]
             send_activation_link.delay(user, token)
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, *args, **kwargs):
         token = request.data.get("token")
@@ -83,8 +80,7 @@ class UserViewset(viewsets.ModelViewSet):
             u.is_active = True
             u.save()
             return response.Response("success", status=status.HTTP_200_OK)
-        else:
-            return response.Response("invalid", status=status.HTTP_400_BAD_REQUEST)
+        return response.Response("invalid", status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['GET'], detail=True)
     def resend_activation_link(self, request, *args, **kwargs):
@@ -97,8 +93,7 @@ class UserViewset(viewsets.ModelViewSet):
                 {'status': "An activation link has been sent"},
                 status=status.HTTP_200_OK
             )
-        else:
-            return response.Response(
-                {'error': 'This account has already been activated'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        return response.Response(
+            {'error': 'This account has already been activated'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
