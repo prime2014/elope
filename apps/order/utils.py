@@ -66,7 +66,7 @@ class MpesaGateway:
 
     def send_payment(self, amount, phone, url):
         """Send the payment details to the sandbox api endpoint"""
-        headers = dict()
+        headers = {}
         headers["Authorization"] = f"Bearer {MpesaGateway.token}"
         payment = {
             "BusinessShortCode": int(self.BusinessShortCode),
