@@ -51,4 +51,4 @@ class MpesaPaymentChannel(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps(response))
 
     async def payment_result(self, event):
-        logger.info("PAYMENT CONSUMER: %s" % event['Body'])
+        logger.info("PAYMENT CONSUMER: %s", event['Body'])

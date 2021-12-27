@@ -15,5 +15,5 @@ def send_payment_details(data):
     except exceptions.RequestAborted:
         raise exceptions.RequestAborted()
     else:
-        logging.info("********************* %s" % resp)
+        logging.info("********************* %s", resp)
         return resp

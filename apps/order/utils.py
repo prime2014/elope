@@ -42,12 +42,12 @@ class MpesaGateway:
                 self.consumer_secret
             ))
         except BaseException as exc:
-            logger.error("Could not get the access token: %s" % exc)
+            logger.error("Could not get the access token: %s", exc)
             raise BaseException(exc)
         else:
             json_token = req.text
             access = json.loads(json_token)
-            logger.info("THE ACCESS TOKEN: %s" % access)
+            logger.info("THE ACCESS TOKEN: %s", access)
             self.__class__.expiry = time.time() + 3400
             self.__class__.token = access.get("access_token")
             return access
@@ -82,7 +82,7 @@ class MpesaGateway:
             "TransactionDesc": "Payment of ORDER"
         }
         try:
-            logger.info("THIS IS PAYMENT %s" % payment)
+            logger.info("THIS IS PAYMENT %s", payment)
             req = requests.post(url=URLEnum.STK_URL.value, json=payment, headers=headers)
         except BaseException as exc:
             logger.error(exc.with_traceback)
