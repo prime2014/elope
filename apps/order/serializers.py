@@ -135,9 +135,6 @@ class BatchCartSerializer(CartSerializer):
         )
         extra_kwargs = {}
 
-    def validate(self, validated_data):
-        return super().validate(validated_data)
-
 
 class OrderSerializer(serializers.ModelSerializer):
     customer = UserSerializer(
