@@ -12,6 +12,7 @@ test_patterns = [
 ]
 
 
+
 [[analyzers]]
 name = "python"
 enabled = true
