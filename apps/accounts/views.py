@@ -85,7 +85,7 @@ class UserViewset(viewsets.ModelViewSet):
 
         if user and activation_token.check_token(user.data, token):
             u.is_active = True
-            u.save()
+            u.save(update_fields=["is_active"])
             return response.Response("success", status=status.HTTP_200_OK)
         else:
             return response.Response("invalid", status=status.HTTP_400_BAD_REQUEST)

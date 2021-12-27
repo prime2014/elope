@@ -4,15 +4,12 @@ version: "3"
 services:
 
   postgres:
-    build:
-      context: .
-      dockerfile: ./utils/postgres/Dockerfile
     image: postgres:12
     container_name: elope_local_postgres
     env_file:
       - ./.env
     volumes:
-      - ~/opt/data/vision:/server/service
+      - ~/opt/data/vision:/server/data
     networks:
       - elope-bridge
 
