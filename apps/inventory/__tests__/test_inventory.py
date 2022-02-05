@@ -18,24 +18,31 @@ logger = logging.getLogger(__name__)
 )
 def test_category(name):
     data = Category.objects.create(name=name)
-    assert Category.objects.count() > 0
-    assert data.name == name
+    if Category.objects.count() <= 0:
+        raise AssertionError
+    if data.name != name:
+        raise AssertionError
 
 
 @pytest.mark.django_db(transaction=True)
 def test_products(create_products):
-    assert create_products.name == "Beauty Watch"
-    assert create_products.price == "500.00"
+    if create_products.name != "Beauty Watch":
+        raise AssertionError
+    if create_products.price != "500.00":
+        raise AssertionError
 
 
 @pytest.mark.django_db(transaction=True)
 def test_stock_creation(create_products):
-    assert create_products.product_stock.quantity == 100
-    assert create_products.product_stock.product == create_products
+    if create_products.product_stock.quantity != 100:
+        raise AssertionError
+    if create_products.product_stock.product != create_products:
+        raise AssertionError
 
 
 @pytest.mark.django_db(transaction=True)
 def test_products_api_view():
     request = APIClient()
     response = request.get('/inventory/api/v1/products/')
-    assert response.status_code == 200
+    if response.status_code != 200:
+        raise AssertionError
