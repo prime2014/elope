@@ -23,8 +23,7 @@ class CategoryViewset(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProductViewset(viewsets.ModelViewSet):
@@ -42,9 +41,8 @@ class ProductViewset(viewsets.ModelViewSet):
         if page is not None:
             serializers = self.serializer_class(page, many=True)
             return paginator.get_paginated_response(serializers.data)
-        else:
-            serializers = self.serializer_class(queryset, many=True)
-            return response.Response(serializers.data, status=status.HTTP_200_OK)
+        serializers = self.serializer_class(queryset, many=True)
+        return response.Response(serializers.data, status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -53,8 +51,7 @@ class ProductViewset(viewsets.ModelViewSet):
             serializer.save()
             resp = response.Response(serializer.data, status=status.HTTP_201_CREATED)
             return resp
-        else:
-            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['GET'], detail=False)
     def get_latest_three_items(self, request, *args, **kwargs):
@@ -75,8 +72,7 @@ class StockViewset(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class ProductImagesViewset(viewsets.ModelViewSet):
@@ -91,5 +87,4 @@ class ProductImagesViewset(viewsets.ModelViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)

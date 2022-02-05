@@ -22,5 +22,4 @@ class AuthenticateUser(ModelBackend):
         is_active = getattr(user, 'is_active')
         if is_active:
             return True
-        else:
-            return exceptions.ValidationError("This user is not activated.He cannot be authenticated")
+        return exceptions.ValidationError("This user is not activated.He cannot be authenticated")

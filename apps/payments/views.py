@@ -24,5 +24,4 @@ class PaymentViewset(ModelViewSet):
         if serializers.is_valid(raise_exception=True):
             serializers.save()
             return Response(serializers.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)

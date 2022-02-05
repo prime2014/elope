@@ -91,8 +91,7 @@ class Order(models.Model):
         if self.status in ['CONFIRMED']:
             self.status = "CANCELLED"
             return self.save(update_fields=['status'])
-        else:
-            return None
+        return None
 
 
 class Cart(models.Model):

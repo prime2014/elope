@@ -54,12 +54,11 @@ class OrderViewset(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             qs = Order.objects.all().order_by("-date_of_order")
             return qs
-        elif get_user(self.request).is_authenticated:
+        if get_user(self.request).is_authenticated:
             qs = Order.objects.filter(customer=self.request.user).order_by(
                 "-date_of_order")
             return qs
-        else:
-            raise PermissionDenied()
+        raise PermissionDenied()
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user, status="DRAFT")
@@ -69,7 +68,7 @@ class OrderViewset(viewsets.ModelViewSet):
         if self.request.method == "GET":
             order = self.serializer_class(instance=get_object_or_404(Order, pk=kwargs['pk']))
             return response.Response(order.data, status=status.HTTP_200_OK)
-        elif self.request.method == "PATCH":
+        if self.request.method == "PATCH":
             address = serializers.AddressSerializer(data=request.data)
             if address.is_valid(raise_exception=True):
                 address.save()
@@ -80,8 +79,7 @@ class OrderViewset(viewsets.ModelViewSet):
                     serialize.save(shipping_address=a)
                     orders = self.serializer_class(instance=get_object_or_404(Order, pk=kwargs['pk']))
                 return response.Response(orders.data, status=status.HTTP_201_CREATED)
-            else:
-                return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.Response(address.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return None
 
@@ -98,14 +96,13 @@ class PaymentForOrders(OrderViewset):
             async_to_sync(channel_layer.group_send(str(self.get_object().pk), {
                           "type": "payment_result", **request.data}))
             return HttpResponse(request.data)
-        elif stkCallback["ResultCode"] == 1032:
+        if stkCallback["ResultCode"] == 1032:
             logger.info(request.data)
             logger.info(self.request.user)
             data = self.get_object().pk
             async_to_sync(channel_layer.send(str(data), {"type": "payment_result", **request.data}))
             return HttpResponse(request.data)
-        else:
-            return HttpResponse("You have insufficient funds in your account")
+        return HttpResponse("You have insufficient funds in your account")
 
 
 class BatchOrderViewset(viewsets.ModelViewSet):
@@ -172,11 +169,10 @@ class CartViewset(viewsets.ModelViewSet):
         if self.request.user.is_staff:
             cart = Cart.objects.all()
             return cart
-        elif self.request.user.is_authenticated:
+        if self.request.user.is_authenticated:
             cart = Cart.objects.filter(cart_owner=self.request.user)
             return cart
-        else:
-            raise PermissionDenied()
+        raise PermissionDenied()
 
     def perform_create(self, serializer):
         draft_order, _ = Order.objects.get_or_create(customer=self.request.user, status="DRAFT")
@@ -206,11 +202,10 @@ class MpesaPayment(GenericAPIView):
             data = str(request.user).replace(" ", "_")
             async_to_sync(channel_layer.send(str(data), {"type": "payment_result", **request.data}))
             return HttpResponse(request.data)
-        elif stkCallback["ResultCode"] == 1032:
+        if stkCallback["ResultCode"] == 1032:
             logger.info(request.data)
             logger.info(self.request.user)
             data = str(self.request.user).replace(" ", "_")
             async_to_sync(channel_layer.group_send(str(data), {"type": "payment_result", **request.data}))
             return HttpResponse(request.data)
-        else:
-            return HttpResponse("You have insufficient funds in your account")
+        return HttpResponse("You have insufficient funds in your account")
