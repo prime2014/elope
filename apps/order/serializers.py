@@ -46,7 +46,7 @@ class CartSerializer(serializers.ModelSerializer):
         }
 
     def get_product_name(self, obj):
-        logger.info("THE OBJECT IS: %s" % obj)
+        logger.info("THE OBJECT IS: %s", obj)
         return Products.objects.get(pk=obj.item.pk).name
 
     def get_image_urls(self, obj):
@@ -111,7 +111,7 @@ class CartSerializer(serializers.ModelSerializer):
             instance.quantity += diff
             stock.decrease_stock(diff)
         elif diff < 0:
-            logger.info("SUBTRACTING... %s" % stock)
+            logger.info("SUBTRACTING... %s", stock)
             instance.quantity -= abs(diff)
             stock.increase_stock(abs(diff))
         else:
